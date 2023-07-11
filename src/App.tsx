@@ -1,9 +1,7 @@
 import React from 'react';
+import { useRoutes } from 'react-router-dom';
+import router from '@/router';
 function App() {
-  return (
-    <div className="App">
-      <h1> 招新项目！！！！！</h1>
-    </div>
-  );
+  return <div className="App">{useRoutes(router)}</div>;
 }
 export default App;
