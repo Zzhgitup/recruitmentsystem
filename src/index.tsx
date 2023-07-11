@@ -1,6 +1,7 @@
 import React, { FC, ReactNode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import App from '@/App';
 import { store } from './store';
 import '@/assets/css/index.less';
@@ -13,7 +14,9 @@ interface Props {
 const AppWithUI: FC<Props> = () => {
   return (
     <Provider store={store}>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </Provider>
   );
 };
