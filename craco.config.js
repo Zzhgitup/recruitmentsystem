@@ -10,5 +10,26 @@ module.exports = {
       '@': path.resolve('src')
     }
   },
-  plugins: [{ plugin: CracolessPlugin }]
+  plugins: [{ plugin: CracolessPlugin }],
+  style: {
+    postcss: {
+      mode: 'extends',
+      loaderOptions: {
+        postcssOptions: {
+          ident: 'postcss',
+          plugins: [
+            [
+              'postcss-pxtorem',
+              {
+                rootValue: 375 / 10, // 根元素字体大小
+                // propList: ['width', 'height']
+                include: path.resolve(__dirname, 'src/views/studentApply/css'),
+                propList: ['*']
+              }
+            ]
+          ]
+        }
+      }
+    }
+  }
 };
