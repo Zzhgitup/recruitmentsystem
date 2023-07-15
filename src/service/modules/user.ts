@@ -30,8 +30,7 @@ export function typeUpload(data: any) {
 
 export function deleteType(data: any) {
   return Hyrequire.delete({
-    url: '/types/type',
-    params: data
+    url: `/types/type?${data}`
   });
 }
 
@@ -66,7 +65,87 @@ export function QuestionUpload(data: any) {
 
 export function deleteQuestion(data: any) {
   return Hyrequire.delete({
-    url: '/questions/question',
+    url: `/questions/question?${data}`
+  });
+}
+
+export function randomQuestion(data: any) {
+  return Hyrequire.get({
+    url: '/questions/random',
     params: data
   });
 }
+
+//简历管理
+export function allResumePage(data: any) {
+  return Hyrequire.get({
+    url: '/resume/querry',
+    params: data
+  });
+}
+
+export function resumeById(data: any) {
+  return Hyrequire.get({
+    url: '/resume/resume',
+    params: data
+  });
+}
+
+export function resumeAdd(data: any) {
+  return Hyrequire.post({
+    url: '/resume/resume',
+    params: data
+  });
+}
+
+export function resumeUpload(data: any) {
+  return Hyrequire.put({
+    url: '/resume/resume',
+    params: data
+  });
+}
+
+export function resumeDelete(data: any) {
+  return Hyrequire.delete({
+    url: '/resume/resume',
+    params: data
+  });
+}
+
+//面试人员管理
+export function allPage(data: any) {
+  return Hyrequire.get({
+    url: '/admin/allPage',
+    params: data
+  });
+}
+
+export function intervieweeAdd(data: any) {
+  return Hyrequire.post({
+    url: '/admin/users',
+    params: data
+  });
+}
+
+export function intervieweeUpload(data: any) {
+  return Hyrequire.put({
+    url: '/admin/users',
+    params: data
+  });
+}
+
+export function intervieweeDelete(data: any) {
+  return Hyrequire.delete({
+    url: '/admin/users',
+    params: data
+  });
+}
+
+export function usersAddByfile(data: any) {
+  return Hyrequire.post({
+    url: '/admin/users',
+    data: data
+  });
+}
+
+//excel管理

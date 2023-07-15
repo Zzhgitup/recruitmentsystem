@@ -15,4 +15,19 @@ const Category = React.lazy(() => import('@/views/user/questionBank/category'));
 const Interview = React.lazy(() => import('@/views/user/interview'));
 //简历管理
 const Resume = React.lazy(() => import('@/views/user/resume'));
-export { StudentApply, Login, User, Users, QuestionBank, Category, Interview, Resume };
+//面试者管理
+const Interviewee = React.lazy(() => import('@/views/user/interviewee'));
+//简历管理
+const Excel = React.lazy(() => import('@/views/user/interview/excel'));
+export {
+  StudentApply,
+  Login,
+  User,
+  Users,
+  Excel,
+  QuestionBank,
+  Category,
+  Interview,
+  Resume,
+  Interviewee
+};

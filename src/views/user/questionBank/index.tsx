@@ -2,13 +2,19 @@ import React, { memo, useState, useEffect, useCallback } from 'react';
 import type { FC, ReactNode } from 'react';
 import type { PaginationProps } from 'antd';
 import { Table, Pagination, Button, Space, Form, Input, Radio, message, Modal, Select } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import {
+  SearchOutlined,
+  PlusSquareOutlined,
+  QuestionCircleOutlined,
+  MinusSquareOutlined
+} from '@ant-design/icons';
 import {
   getAllQuestion,
   QuestionAdd,
   QuestionUpload,
   deleteQuestion,
-  getAllType
+  getAllType,
+  randomQuestion
 } from '@/service/modules/user';
 interface IProps {
   children?: ReactNode;
@@ -26,6 +32,8 @@ export interface questionsType {
 const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 页`;
 const User: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
+  const [openRandom, setOpenRandom] = useState(false);
+
   const columns: Array<any> = [
     {
       title: '问题',
@@ -42,7 +50,7 @@ const User: FC<IProps> = () => {
     {
       title: '类别',
       dataIndex: 'questionBankType',
-      width: 40,
+      width: 50,
       key: 'questionBankType',
       render: (_: any, { questionBankType }: any) => <>{questionBankType == 1 ? '面试' : '笔试'}</>
     },
@@ -89,7 +97,15 @@ const User: FC<IProps> = () => {
     questionBankType: 1,
     typeId: ''
   });
-  // const key = 'updatable';
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange
+  };
   const getUserCb = useCallback(
     () => getAllQuestion({ ...pagination, ...searchForm }),
     [pagination, searchForm]
@@ -109,6 +125,8 @@ const User: FC<IProps> = () => {
     setpagination({ pageSize: 5, pageNum: pageNumber });
   };
   const [form] = Form.useForm();
+  const [formRandom] = Form.useForm();
+
   const invform = {
     questionBankType: 1,
     typeId: ''
@@ -136,7 +154,6 @@ const User: FC<IProps> = () => {
       });
     }
   };
-
   const onAddOk = async () => {
     try {
       const values = await formADD.validateFields();
@@ -148,6 +165,28 @@ const User: FC<IProps> = () => {
         formADD.resetFields();
       } else {
         message.error('添加失败！');
+      }
+    } catch (errorInfo) {
+      console.log('Failed:', errorInfo);
+    }
+  };
+  const onRandomOk = async () => {
+    try {
+      const values = await formRandom.validateFields();
+      const res = await randomQuestion({ typeId: values.typeId });
+      console.log(res);
+
+      if (res.status == 200) {
+        message.success('生成成功！');
+        const { answer, question } = res.data;
+        const questionBankType = res.data.questionBankType ? '笔试' : '面 试';
+        formRandom.setFieldsValue({
+          answer,
+          question,
+          questionBankType
+        });
+      } else {
+        message.error('生成失败！');
       }
     } catch (errorInfo) {
       console.log('Failed:', errorInfo);
@@ -194,10 +233,12 @@ const User: FC<IProps> = () => {
   }, []);
 
   const deleteIDFn = async () => {
-    console.log(deleteForm);
-
     try {
-      const res = await deleteQuestion({ ids: deleteForm.id });
+      const ids =
+        deleteForm.id == 0
+          ? selectedRowKeys.map((id) => `ids=${id}`).join('&')
+          : `ids=${deleteForm.id}`;
+      const res = await deleteQuestion(ids);
       if (res.status == 200) {
         setpagination({ ...pagination });
         messageApi.open({
@@ -255,14 +296,14 @@ const User: FC<IProps> = () => {
             name="question"
             rules={[{ required: true }, { type: 'string', min: 2, max: 100 }]}
           >
-            <Input placeholder="请填写问题" style={{ width: '250px' }} />
+            <Input.TextArea placeholder="请填写问题" style={{ minWidth: '250px' }} />
           </Form.Item>
           <Form.Item
             label="回答"
             name="answer"
             rules={[{ required: true }, { type: 'string', min: 2, max: 100 }]}
           >
-            <Input placeholder="请填写回答" style={{ width: '250px' }} />
+            <Input.TextArea placeholder="请填写回答" style={{ minWidth: '250px' }} />
           </Form.Item>
           <Form.Item label="类别" name="questionBankType">
             <Select>
@@ -311,14 +352,14 @@ const User: FC<IProps> = () => {
             name="question"
             rules={[{ required: true }, { type: 'string', min: 2, max: 100 }]}
           >
-            <Input placeholder="请填写问题" style={{ width: '250px' }} />
+            <Input.TextArea placeholder="请填写问题" style={{ minWidth: '250px' }} />
           </Form.Item>
           <Form.Item
             label="回答"
             name="answer"
             rules={[{ required: true }, { type: 'string', min: 2, max: 100 }]}
           >
-            <Input placeholder="请填写回答" style={{ width: '250px' }} />
+            <Input.TextArea placeholder="请填写回答" style={{ minWidth: '250px' }} />
           </Form.Item>
           <Form.Item label="类别" name="questionBankType">
             <Select>
@@ -339,10 +380,52 @@ const User: FC<IProps> = () => {
           </Form.Item>
         </Form>
       </Modal>
+      <Modal
+        title="随机一题"
+        centered
+        open={openRandom}
+        onOk={onRandomOk}
+        onCancel={() => setOpenRandom(false)}
+        width={400}
+        cancelText="取消"
+        okText="点击生成随机一题"
+      >
+        <Form
+          layout="horizontal"
+          form={formRandom}
+          size="large"
+          style={{ marginBottom: '10px' }}
+          labelCol={{ span: 5 }}
+          wrapperCol={{ span: 15 }}
+          validateMessages={validateMessages}
+          name="randomFormName"
+        >
+          <Form.Item label="问题" name="question">
+            <Input.TextArea readOnly style={{ minWidth: '250px' }} />
+          </Form.Item>
+          <Form.Item label="回答" name="answer">
+            <Input.TextArea readOnly style={{ minWidth: '250px' }} />
+          </Form.Item>
+
+          <Form.Item label="类别" name="questionBankType">
+            <Input readOnly style={{ width: '250px' }} />
+          </Form.Item>
+          <Form.Item label="类型" name="typeId" extra="注意：可根据所选的类型进行分类">
+            <Select style={{ width: '250px' }}>
+              {TypeList.map((item) => {
+                return (
+                  <Select.Option key={item.id} value={item.id}>
+                    {item.typeName}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
       <Form
         layout="inline"
         form={form}
-        size="large"
         style={{ margin: '0 0 10px 10px' }}
         onFinish={onFinish}
         initialValues={invform}
@@ -365,18 +448,44 @@ const User: FC<IProps> = () => {
           </Select>
         </Form.Item>
         <Form.Item>
-          <Button type="primary" icon={<SearchOutlined />} htmlType="submit">
+          <Button
+            type="primary"
+            style={{ marginRight: '10px' }}
+            icon={<SearchOutlined />}
+            htmlType="submit"
+          >
             搜索
           </Button>
+          <Button
+            onClick={() => setOpenADD(true)}
+            style={{ backgroundColor: '#0DD068', marginRight: '10px' }}
+            type="primary"
+            icon={<PlusSquareOutlined />}
+          >
+            添加
+          </Button>
+          <Button
+            onClick={() => {
+              setopenConfirm(true);
+              setdeleteForm({ id: 0, question: '所选问题' });
+            }}
+            danger
+            disabled={selectedRowKeys.length == 0}
+            style={{ marginRight: '10px' }}
+            type="primary"
+            icon={<MinusSquareOutlined />}
+          >
+            批量删除
+          </Button>
+          <Button
+            onClick={() => setOpenRandom(true)}
+            style={{ backgroundColor: '#0DD068' }}
+            type="primary"
+            icon={<QuestionCircleOutlined />}
+          >
+            随机一题
+          </Button>
         </Form.Item>
-        <Button
-          onClick={() => setOpenADD(true)}
-          style={{ backgroundColor: '#0DD068' }}
-          type="primary"
-          icon={<SearchOutlined />}
-        >
-          添加
-        </Button>
       </Form>
       <Table
         columns={columns}
@@ -384,6 +493,7 @@ const User: FC<IProps> = () => {
         dataSource={listdata}
         pagination={false}
         rowKey={(listdata) => listdata.id}
+        rowSelection={rowSelection}
         scroll={{
           x: '100%'
         }}

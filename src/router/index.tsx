@@ -10,7 +10,9 @@ import {
   QuestionBank,
   Category,
   Resume,
-  Interview
+  Interview,
+  Interviewee,
+  Excel
 } from './modules/routes';
 const routes: RouteObject[] = [
   {
@@ -48,6 +50,14 @@ const routes: RouteObject[] = [
       {
         path: '/user/interview',
         element: <Interview />
+      },
+      {
+        path: '/user/interviewee',
+        element: <Interviewee />
+      },
+      {
+        path: '/user/excel',
+        element: <Excel />
       }
     ]
   },

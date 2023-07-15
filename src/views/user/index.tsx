@@ -3,10 +3,11 @@ import React, { memo, Suspense, useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
 import {
-  AppstoreOutlined,
   MailOutlined,
   MenuUnfoldOutlined,
-  MenuFoldOutlined
+  MenuFoldOutlined,
+  FileDoneOutlined,
+  QuestionCircleOutlined
 } from '@ant-design/icons';
 import { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme, Button } from 'antd';
@@ -15,6 +16,7 @@ interface IProps {
 }
 const RouterToCH = new Map([
   ['interview', '面试管理'],
+  ['interviewee', '面试官管理'],
   ['resume', '简历列表'],
   ['questionBank', '题库列表'],
   ['category', '类型分类']
@@ -38,13 +40,13 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  // getItem('首页', 'user/', <PieChartOutlined />),
   getItem('面试管理', 'interview', <MailOutlined />),
-  getItem('题库管理', 'questionBankBox', <MailOutlined />, [
+  getItem('题库管理', 'questionBankBox', <QuestionCircleOutlined />, [
     getItem('题库列表', 'questionBank'),
     getItem('题库分类', 'category')
   ]),
-  getItem('简历上传', 'resume', <AppstoreOutlined />)
+  getItem('简历管理', 'resume', <FileDoneOutlined />),
+  getItem('面试官管理', 'interviewee', <MailOutlined />)
 ];
 const User: FC<IProps> = () => {
   const location = useLocation();
@@ -74,8 +76,6 @@ const User: FC<IProps> = () => {
   }
   const navigate = useNavigate();
   const onClickRouter: MenuProps['onClick'] = (e) => {
-    console.log('onClickRouter');
-
     setBread(e.keyPath);
     const toRouter = `${e.key}`;
     navigate(toRouter, { replace: false });

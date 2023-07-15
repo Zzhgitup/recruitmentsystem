@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
 import type { FC, ReactNode } from 'react';
 import { Table, Button, Space, Form, Input, message, Modal } from 'antd';
-import { PlusSquareOutlined, MinusSquareOutlined } from '@ant-design/icons';
+import { PlusSquareOutlined } from '@ant-design/icons';
 import { getAllType, typeAdd, typeUpload, deleteType } from '@/service/modules/user';
 interface IProps {
   children?: ReactNode;
@@ -10,18 +10,8 @@ interface SortType {
   id: number;
   typeName: string;
 }
-
-const Category: FC<IProps> = () => {
+const Student: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange
-  };
   const columns: Array<any> = [
     {
       title: '类型名',
@@ -128,14 +118,8 @@ const Category: FC<IProps> = () => {
   };
   const deleteIDFn = async () => {
     try {
-      const ids =
-        deleteForm.id == 0
-          ? selectedRowKeys.map((id) => `ids=${id}`).join('&')
-          : `ids=${deleteForm.id}`;
-      const res = await deleteType(ids);
-      setSelectedRowKeys([]);
+      const res = await deleteType({ ids: deleteForm.id });
       console.log(res);
-
       if (res.status == 200) {
         setpagination({ ...pagination });
         message.success('删除成功！');
@@ -233,24 +217,11 @@ const Category: FC<IProps> = () => {
       >
         添加
       </Button>
-      <Button
-        onClick={() => {
-          setopenConfirm(true);
-          setdeleteForm({ id: 0, typeName: '所选分类' });
-        }}
-        disabled={selectedRowKeys.length == 0}
-        style={{ margin: '0 0 10px 20px' }}
-        type="primary"
-        icon={<MinusSquareOutlined />}
-      >
-        批量删除
-      </Button>
       <Table
         columns={columns}
         bordered
         dataSource={listdata}
         pagination={false}
-        rowSelection={rowSelection}
         rowKey={(listdata) => listdata.id}
         scroll={{
           x: '100%'
@@ -260,4 +231,4 @@ const Category: FC<IProps> = () => {
   );
 };
 
-export default memo(Category);
+export default memo(Student);
