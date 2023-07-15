@@ -23,7 +23,7 @@ module.exports = {
               {
                 rootValue: 375 / 10, // 根元素字体大小
                 // propList: ['width', 'height']
-                include: path.resolve(__dirname, 'src/views/studentApply/css'),
+                include: path.resolve(__dirname, 'src/views/studentApply/'),
                 propList: ['*']
               }
             ]
