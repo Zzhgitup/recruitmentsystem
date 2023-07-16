@@ -12,6 +12,7 @@ import {
   Resume,
   Interview,
   Interviewee,
+  PCreact,
   Excel
 } from './modules/routes';
 const routes: RouteObject[] = [
@@ -22,6 +23,10 @@ const routes: RouteObject[] = [
   {
     path: '/studentApply',
     element: <StudentApply />
+  },
+  {
+    path: '/pc',
+    element: <PCreact />
   },
   {
     path: '/login',
