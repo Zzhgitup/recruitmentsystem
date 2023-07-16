@@ -19,10 +19,13 @@ const Resume = React.lazy(() => import('@/views/user/resume'));
 const Interviewee = React.lazy(() => import('@/views/user/interviewee'));
 //简历管理
 const Excel = React.lazy(() => import('@/views/user/interview/excel'));
-//
+//电脑端
 const PCreact = React.lazy(() => import('@/views/PCreact'));
+//通知界面
+const Success = React.lazy(() => import('@/views/studentApply/c-child/success'));
 export {
   PCreact,
+  Success,
   StudentApply,
   Login,
   User,

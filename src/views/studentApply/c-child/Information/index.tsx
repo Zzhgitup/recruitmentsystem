@@ -1,17 +1,18 @@
 import React, { memo } from 'react';
 import { FC, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Select, message } from 'antd';
-import './css/index.less';
-import { commituse } from '../../server';
 import JSConfetti from 'js-confetti';
+import { commituse } from '../../server';
 import { useFunDebounce } from '@/hooks';
+import './css/index.less';
 const { Option } = Select;
 interface Props {
   childern?: ReactNode;
 }
-
 const Information: FC<Props> = () => {
   const confetti = new JSConfetti();
+  const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
   const success = (text: string) => {
     messageApi.open({
@@ -53,10 +54,29 @@ const Information: FC<Props> = () => {
         qqNumber: values.qqNumber
       })
         .then((data) => {
-          data.status == 500 ? success('已经报过名了哦🧡') : success('报名成功');
+          if (data.status == 500) {
+            success('已经报过名了哦🧡');
+            setTimeout(() => {
+              navigate('/success', {
+                state: { title: '重复报名', flag: 'info', text: '已经报过名了' }
+              });
+            }, 700);
+          } else {
+            success('报名成功');
+            setTimeout(() => {
+              navigate('/success', {
+                state: {
+                  title: '报名成功',
+                  flag: 'success',
+                  text: '报名成功！，扫描下方二维码加入群聊'
+                }
+              });
+            }, 700);
+          }
         })
         .catch((err) => {
           error();
+
           console.log(err);
         });
     },
