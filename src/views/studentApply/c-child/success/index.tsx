@@ -1,12 +1,12 @@
 import React, { memo } from 'react';
 import { FC, ReactNode } from 'react';
-import { Result, Space, QRCode, Input } from 'antd';
+import { Result, Space, QRCode } from 'antd';
 import { useLocation } from 'react-router-dom';
 import './css/index.less';
 interface Props {
   childern?: ReactNode;
 }
-const Success: FC<Props> = (props) => {
+const Success: FC<Props> = () => {
   const {
     state: { flag, text, title }
   } = useLocation();
