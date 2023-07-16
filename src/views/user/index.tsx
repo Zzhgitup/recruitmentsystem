@@ -19,7 +19,8 @@ const RouterToCH = new Map([
   ['interviewee', '面试官管理'],
   ['resume', '简历列表'],
   ['questionBank', '题库列表'],
-  ['category', '类型分类']
+  ['category', '类型分类'],
+  ['excel', '面试导出']
 ]);
 const { Header, Content, Sider } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
@@ -40,7 +41,10 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem('面试管理', 'interview', <MailOutlined />),
+  getItem('面试管理', 'interviewBox', <MailOutlined />, [
+    getItem('面试列表', 'interview'),
+    getItem('结果导出', 'excel')
+  ]),
   getItem('题库管理', 'questionBankBox', <QuestionCircleOutlined />, [
     getItem('题库列表', 'questionBank'),
     getItem('题库分类', 'category')
