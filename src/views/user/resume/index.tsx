@@ -12,9 +12,10 @@ import {
   Radio,
   message,
   Modal,
-  Select
+  Select,
+  Upload
 } from 'antd';
-import { SearchOutlined, PlusSquareOutlined } from '@ant-design/icons';
+import { SearchOutlined, PlusSquareOutlined, UploadOutlined } from '@ant-design/icons';
 import { allResumePage, resumeAdd, resumeUpload, resumeDelete } from '@/service/modules/user';
 interface IProps {
   children?: ReactNode;
@@ -57,6 +58,7 @@ const Resume: FC<IProps> = () => {
       dataIndex: 'studentId',
       key: 'studentId'
     },
+
     {
       title: '操作',
       key: 'operation',
@@ -99,8 +101,8 @@ const Resume: FC<IProps> = () => {
     getUserCb()
       .then((res) => {
         console.log(res);
-        setlistdata(res.data);
-        // setTotal(res.data.total);
+        setlistdata(res.data.records);
+        setTotal(res.data.total);
       })
       .catch((err) => {
         console.log(err);
@@ -120,7 +122,6 @@ const Resume: FC<IProps> = () => {
     console.log(form.getFieldsValue());
     setpagination({ ...pagination });
     // form.setFieldsValue(values);
-
     // setsearchForm({
     //   sex: values.sex,
     //   typeId: values.typeId
@@ -195,6 +196,13 @@ const Resume: FC<IProps> = () => {
   };
   const [openConfirm, setopenConfirm] = useState(false);
   const [deleteForm, setdeleteForm] = useState({ id: 1, question: '啊' });
+  const normFile = (e: any) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
   return (
     <div>
       {contextHolder}
@@ -211,7 +219,7 @@ const Resume: FC<IProps> = () => {
         </p>
       </Modal>
       <Modal
-        title="添加问题"
+        title="简历上传"
         centered
         open={openADD}
         onOk={onAddOk}
@@ -232,24 +240,21 @@ const Resume: FC<IProps> = () => {
           initialValues={addInvForm}
         >
           <Form.Item
-            label="问题"
-            name="question"
+            label="学号"
+            name="studentId"
             rules={[{ required: true }, { type: 'string', min: 2, max: 100 }]}
           >
-            <Input.TextArea placeholder="请填写问题" style={{ minWidth: '250px' }} />
+            <Input placeholder="请填写你要添加同学的学号" style={{ minWidth: '250px' }} />
           </Form.Item>
-          <Form.Item
-            label="回答"
-            name="answer"
-            rules={[{ required: true }, { type: 'string', min: 2, max: 100 }]}
-          >
-            <Input.TextArea placeholder="请填写回答" style={{ minWidth: '250px' }} />
-          </Form.Item>
-          <Form.Item label="类别" name="sex">
-            <Select>
-              <Select.Option value={0}>女</Select.Option>
-              <Select.Option value={1}>男</Select.Option>
-            </Select>
+          <Form.Item label="正面" name="filePath1" rules={[{ required: true }]}>
+            <Form.Item valuePropName="fileList" getValueFromEvent={normFile} noStyle>
+              <Upload.Dragger name="filePath1" listType="picture-card">
+                <p className="ant-upload-drag-icon">
+                  <UploadOutlined />
+                </p>
+                <p className="ant-upload-text">点击或拖拽添加图片</p>
+              </Upload.Dragger>
+            </Form.Item>
           </Form.Item>
         </Form>
       </Modal>
@@ -317,7 +322,7 @@ const Resume: FC<IProps> = () => {
         <Form.Item label="qq" name="qq" style={{ maxWidth: '180px' }}>
           <Input />
         </Form.Item>
-        <Form.Item label="性别：" name="sex">
+        <Form.Item label="性别:" name="sex">
           <Radio.Group style={{ marginLeft: '10px' }}>
             <Radio.Button value={1}>男</Radio.Button>
             <Radio.Button value={0}>女</Radio.Button>
