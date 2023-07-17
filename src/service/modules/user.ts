@@ -91,24 +91,25 @@ export function resumeById(data: any) {
   });
 }
 
-export function resumeAdd(data: any) {
+export function resumeAdd(params: any, data: any) {
   return Hyrequire.post({
-    url: '/resume/resume',
-    params: data
+    url: '/resume/resumes',
+    params: params,
+    data: data
   });
 }
 
-export function resumeUpload(data: any) {
+export function resumeUpload(params: any, data: any) {
   return Hyrequire.put({
     url: '/resume/resume',
-    params: data
+    params: params,
+    data: data
   });
 }
 
 export function resumeDelete(data: any) {
   return Hyrequire.delete({
-    url: '/resume/resume',
-    params: data
+    url: `/questions/question?${data}`
   });
 }
 
@@ -148,4 +149,11 @@ export function usersAddByfile(data: any) {
   });
 }
 
+//普通用户
+export function userInfo(data: any) {
+  return Hyrequire.get({
+    url: '/user/userInfo',
+    params: data
+  });
+}
 //excel管理

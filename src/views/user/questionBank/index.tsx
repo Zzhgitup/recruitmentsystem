@@ -174,12 +174,10 @@ const User: FC<IProps> = () => {
     try {
       const values = await formRandom.validateFields();
       const res = await randomQuestion({ typeId: values.typeId });
-      console.log(res);
-
       if (res.status == 200) {
         message.success('生成成功！');
         const { answer, question } = res.data;
-        const questionBankType = res.data.questionBankType ? '笔试' : '面 试';
+        const questionBankType = res.data.questionBankType ? '笔试' : '面试';
         formRandom.setFieldsValue({
           answer,
           question,
