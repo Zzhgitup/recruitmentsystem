@@ -98,7 +98,7 @@ const Interviewee: FC<IProps> = () => {
     try {
       const ids = deleteForm.id == 0 ? selectedRowKeys : deleteForm.id;
       console.log(ids);
-      const res = await intervieweeDelete('ids=9&ids=10');
+      const res = await intervieweeDelete(ids);
       setSelectedRowKeys([]);
       if (res.status == 200) {
         setpagination({ ...pagination });
