@@ -37,6 +37,7 @@ export const userSlice = createSlice({
   initialState: {
     // 初始化 state
     token: '',
+    islogin: false,
     userinfo: {
       username: '张三', // 姓名
       power: 1000, // 年龄
@@ -47,11 +48,13 @@ export const userSlice = createSlice({
     changeuser(state, { payload }) {
       const { username, power, id }: Iuser2 = { ...payload };
       state.userinfo = { username, power, id };
+      state.islogin = true;
     },
     //清除token  退出登录
     outlogin(state) {
       localStorage.removeItem('ZXtoken');
       state.token = '';
+      state.islogin = false;
       state.userinfo = {
         username: '空', // 姓名
         power: -1, // 权力

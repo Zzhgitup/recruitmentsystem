@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import './css/index.less';
 import { useMobilorPC } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
+import { useAppselect } from '@/store';
 const MatrixRain: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   let CharIndex: any[] = [];
@@ -54,6 +55,10 @@ const MatrixRain: React.FC = () => {
 
     return () => clearInterval(intervalId);
   }, []);
+  const userinfo = useAppselect((state) => {
+    state.user;
+  });
+  console.log(userinfo);
   return (
     <div className="PCreact">
       <canvas ref={canvasRef} />

@@ -35,6 +35,7 @@ export const Container = styled.div`
   .login {
     width: 30vw;
     height: 80vh;
+    min-height: 500px;
     min-width: 300px;
     border-radius: 20px;
     background-color: white;

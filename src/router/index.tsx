@@ -16,18 +16,7 @@ import {
   PCreact,
   Excel
 } from './modules/routes';
-//懒加载组件
-const lazyLoad = (moduleName: string) => {
-  const Module = React.lazy(() => import(`@/views/${moduleName}`));
-  return <Module />;
-};
-// 路由鉴权组件（核心代码 ）
-// children-是props中的属性解构出来的 是组件内部包裹的内容 类似于（Vue中插槽中的内容）
-const Appraisal = ({ children }: any) => {
-  const token = localStorage.getItem('ZXtoken');
-  console.log(token);
-  return token != null ? children : <Navigate to="/login" />;
-};
+import AuthRequired from '@/components/Auth/AuthRequired';
 const routes: RouteObject[] = [
   {
     path: '/',
@@ -39,7 +28,7 @@ const routes: RouteObject[] = [
   },
   {
     path: '/pc',
-    element: <Appraisal>{lazyLoad('PCreact')}</Appraisal>
+    element: <PCreact />
   },
   {
     path: '/login',
@@ -51,41 +40,77 @@ const routes: RouteObject[] = [
   },
   {
     path: '/user',
-    element: <User />,
+    element: (
+      <AuthRequired requireAuth="admin">
+        <User />
+      </AuthRequired>
+    ),
     children: [
       {
         path: '/user',
-        element: <Navigate to="/user/questionBank" />
+        element: (
+          <AuthRequired requireAuth="admin">
+            <QuestionBank />
+          </AuthRequired>
+        )
       },
       {
         path: '/user/questionBank',
-        element: <QuestionBank />
+        element: (
+          <AuthRequired requireAuth="admin">
+            <QuestionBank />
+          </AuthRequired>
+        )
       },
       {
         path: '/user/category',
-        element: <Category />
+        element: (
+          <AuthRequired requireAuth="admin">
+            <Category />
+          </AuthRequired>
+        )
       },
       {
         path: '/user/resume',
-        element: <Resume />
+        element: (
+          <AuthRequired requireAuth="admin">
+            <Resume />
+          </AuthRequired>
+        )
       },
       {
         path: '/user/interview',
-        element: <Interview />
+        element: (
+          <AuthRequired requireAuth="admin">
+            <Interview />
+          </AuthRequired>
+        )
       },
       {
         path: '/user/interviewee',
-        element: <Interviewee />
+        element: (
+          <AuthRequired requireAuth="admin">
+            <Interviewee />
+          </AuthRequired>
+        )
       },
       {
         path: '/user/excel',
-        element: <Excel />
+        element: (
+          <AuthRequired requireAuth="admin">
+            <Excel />
+          </AuthRequired>
+        )
       }
     ]
   },
   {
     path: '/users',
-    element: <Users />
+    element: (
+      <AuthRequired requireAuth="admin">
+        <Users />
+      </AuthRequired>
+    )
   }
 ];
 export default routes;
