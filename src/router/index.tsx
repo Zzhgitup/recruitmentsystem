@@ -41,7 +41,7 @@ const routes: RouteObject[] = [
   {
     path: '/user',
     element: (
-      <AuthRequired requireAuth="admin">
+      <AuthRequired requireAuth="0">
         <User />
       </AuthRequired>
     ),
@@ -49,7 +49,7 @@ const routes: RouteObject[] = [
       {
         path: '/user',
         element: (
-          <AuthRequired requireAuth="admin">
+          <AuthRequired requireAuth="0">
             <QuestionBank />
           </AuthRequired>
         )
@@ -57,7 +57,7 @@ const routes: RouteObject[] = [
       {
         path: '/user/questionBank',
         element: (
-          <AuthRequired requireAuth="admin">
+          <AuthRequired requireAuth="0">
             <QuestionBank />
           </AuthRequired>
         )
@@ -65,7 +65,7 @@ const routes: RouteObject[] = [
       {
         path: '/user/category',
         element: (
-          <AuthRequired requireAuth="admin">
+          <AuthRequired requireAuth="0">
             <Category />
           </AuthRequired>
         )
@@ -73,7 +73,7 @@ const routes: RouteObject[] = [
       {
         path: '/user/resume',
         element: (
-          <AuthRequired requireAuth="admin">
+          <AuthRequired requireAuth="0">
             <Resume />
           </AuthRequired>
         )
@@ -81,7 +81,7 @@ const routes: RouteObject[] = [
       {
         path: '/user/interview',
         element: (
-          <AuthRequired requireAuth="admin">
+          <AuthRequired requireAuth="0">
             <Interview />
           </AuthRequired>
         )
@@ -89,7 +89,7 @@ const routes: RouteObject[] = [
       {
         path: '/user/interviewee',
         element: (
-          <AuthRequired requireAuth="admin">
+          <AuthRequired requireAuth="1">
             <Interviewee />
           </AuthRequired>
         )
@@ -97,7 +97,7 @@ const routes: RouteObject[] = [
       {
         path: '/user/excel',
         element: (
-          <AuthRequired requireAuth="admin">
+          <AuthRequired requireAuth="0">
             <Excel />
           </AuthRequired>
         )
@@ -107,7 +107,7 @@ const routes: RouteObject[] = [
   {
     path: '/users',
     element: (
-      <AuthRequired requireAuth="admin">
+      <AuthRequired requireAuth="0">
         <Users />
       </AuthRequired>
     )
