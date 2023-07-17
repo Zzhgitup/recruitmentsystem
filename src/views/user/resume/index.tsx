@@ -47,14 +47,14 @@ const Resume: FC<IProps> = () => {
       dataIndex: 'filePath1',
       width: 200,
       key: 'filePath1',
-      render: (_: any) => <Image width={200} src={_}></Image>
+      render: (_: any) => <Image placeholder width={200} src={_}></Image>
     },
     {
       title: '反面',
       dataIndex: 'filePath2',
       width: 200,
       key: 'filePath2',
-      render: (_: any) => <Image width={200} src={_}></Image>
+      render: (_: any) => <Image placeholder width={200} src={_}></Image>
     },
     {
       title: '姓名',
@@ -85,13 +85,10 @@ const Resume: FC<IProps> = () => {
   ];
   const onUserRevise = (data: any) => {
     setUploadOpen(true);
-    const { id, answer, username, typeId, sex } = data;
+    const { userId, username } = data;
     formUpload.setFieldsValue({
-      id,
-      answer,
-      username,
-      typeId,
-      sex
+      userId,
+      username
     });
   };
   const onUserDelete = (data: any) => {
@@ -121,10 +118,6 @@ const Resume: FC<IProps> = () => {
   const onChange: PaginationProps['onChange'] = (pageNumber) => {
     setpagination({ pageSize: 5, pageNum: pageNumber });
   };
-  const addInvForm = {
-    sex: 1,
-    typeId: 1
-  };
   const [formADD]: any = Form.useForm();
   const [formUpload]: any = Form.useForm();
   const onFinish = (values: any) => {
@@ -152,8 +145,7 @@ const Resume: FC<IProps> = () => {
       if (res.status == 200) {
         setpagination({ ...pagination });
         message.success('添加成功！');
-        setOpenADD(false);
-        formADD.resetFields();
+        reopenADD();
       } else {
         message.error('添加失败！');
       }
@@ -183,6 +175,14 @@ const Resume: FC<IProps> = () => {
   //打开添加框
   const [openADD, setOpenADD] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const reopenADD = () => {
+    setOpenADD(false);
+    formADD.resetFields();
+  };
+  const reopenUpload = () => {
+    setUploadOpen(false);
+    formUpload.resetFields();
+  };
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
   };
@@ -209,7 +209,7 @@ const Resume: FC<IProps> = () => {
     try {
       const ids =
         deleteForm.userId == 0
-          ? selectedRowKeys.map((id) => `ids=${id}`).join('&')
+          ? selectedRowKeys.map((userId) => `ids=${userId}`).join('&')
           : `ids=${deleteForm.userId}`;
       const res = await resumeDelete(ids);
       if (res.status == 200) {
@@ -273,7 +273,7 @@ const Resume: FC<IProps> = () => {
         centered
         open={openADD}
         onOk={onAddOk}
-        onCancel={() => setOpenADD(false)}
+        onCancel={() => reopenADD()}
         width={400}
         cancelText="取消"
         okText="添加"
@@ -287,7 +287,6 @@ const Resume: FC<IProps> = () => {
           wrapperCol={{ span: 14 }}
           validateMessages={validateMessages}
           name="addFormName"
-          initialValues={addInvForm}
         >
           <Form.Item
             label="学号"
@@ -331,7 +330,7 @@ const Resume: FC<IProps> = () => {
         centered
         open={openUpload}
         onOk={onUploadOk}
-        onCancel={() => setUploadOpen(false)}
+        onCancel={() => reopenUpload()}
         width={400}
         cancelText="取消"
         okText="修改"
@@ -346,7 +345,7 @@ const Resume: FC<IProps> = () => {
           validateMessages={validateMessages}
           name="uploadFormName"
         >
-          <Form.Item style={{ display: 'none' }} label="id" name="userId">
+          <Form.Item style={{ display: 'none' }} label="userId" name="userId">
             <Input />
           </Form.Item>
           <Form.Item label="姓名" name="username">
@@ -444,7 +443,7 @@ const Resume: FC<IProps> = () => {
         bordered
         dataSource={listdata}
         pagination={false}
-        rowKey={(listdata) => listdata.id}
+        rowKey={(listdata) => listdata.userId}
         rowSelection={rowSelection}
         scroll={{
           x: '100%'

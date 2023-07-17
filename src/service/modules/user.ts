@@ -156,4 +156,40 @@ export function userInfo(data: any) {
     params: data
   });
 }
+
+//面试管理
+export function allInterviewPage(data: any) {
+  return Hyrequire.get({
+    url: '/user/allPeople',
+    params: data
+  });
+}
+
+export function getUserInfoById(data: any) {
+  return Hyrequire.get({
+    url: '/user/aboutInfo',
+    params: data
+  });
+}
+
+// export function intervieweeAdd( data: any) {
+//   return Hyrequire.post({
+//     url: '/user/interviewee',
+//     data: data,
+//   });
+// }
+
+export function interviewStatusUpload(params: any) {
+  return Hyrequire.put({
+    url: '/user/status',
+    params: params
+  });
+}
+
+// export function resumeDelete(data: any) {
+//   return Hyrequire.delete({
+//     url: `/questions/question?${data}`
+//   });
+// }
+
 //excel管理
