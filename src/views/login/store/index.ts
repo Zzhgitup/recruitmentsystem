@@ -64,10 +64,13 @@ export const userSlice = createSlice({
     //token
     savetoken(state, { payload }) {
       state.token = payload;
+    },
+    changeloginState(state, { payload }) {
+      state.islogin = payload;
     }
   } // 定义 reducer 函数
 });
 // 通过 createSlice 自动生成的 action creators，对应 reducers 中的每一个函数
 // 在这里没有定义具体的 reducer 函数，因此没有生成对应的 action creators
 export default userSlice.reducer;
-export const { changeuser, outlogin, savetoken } = userSlice.actions;
+export const { changeuser, outlogin, savetoken, changeloginState } = userSlice.actions;
