@@ -9,7 +9,7 @@ interface Icommit {
 }
 export const commituse = (obj: Icommit) => {
   return Hyrequire.post({
-    url: '/user/interviewee',
+    url: '/api/user/interviewee',
     params: {
       claas: obj.claas,
       email: obj.email,

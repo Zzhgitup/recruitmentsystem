@@ -12,6 +12,7 @@ import {
   Resume,
   Interview,
   Interviewee,
+  Success,
   PCreact,
   Excel
 } from './modules/routes';
@@ -31,6 +32,10 @@ const routes: RouteObject[] = [
   {
     path: '/login',
     element: <Login />
+  },
+  {
+    path: '/success',
+    element: <Success />
   },
   {
     path: '/user',
