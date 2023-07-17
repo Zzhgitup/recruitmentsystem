@@ -32,7 +32,7 @@ const AuthRequire: FC<Props> = ({ children, requireAuth }) => {
       <Result
         status="403"
         title="403"
-        subTitle="无权限访问此页面"
+        subTitle="大二的可能无权限访问此页面"
         extra={
           <Button
             onClick={() => {
