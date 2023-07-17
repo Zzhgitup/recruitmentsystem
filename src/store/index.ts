@@ -3,9 +3,11 @@ import { configureStore } from '@reduxjs/toolkit'; // 用于创建 Redux store �
 import { useSelector, TypedUseSelectorHook, useDispatch, shallowEqual } from 'react-redux'; // 引入 React Redux 中的 useSelector 和 TypedUseSelectorHook
 // 创建 Redux store
 import counterSlice from './modules/count';
+import userSlice from '@/views/login/store/index';
 export const store = configureStore({
   reducer: {
-    counter: counterSlice // 将自定义的 Redux slice 作为 counter reducer 添加到 store 中
+    counter: counterSlice, // 将自定义的 Redux slice 作为 counter reducer 添加到 store 中
+    user: userSlice
   }
 });
 // 推导出 RootState 类型，即 Redux store 中的 state 类型
