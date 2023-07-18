@@ -24,19 +24,35 @@ const routes: RouteObject[] = [
   },
   {
     path: '/studentApply',
-    element: <StudentApply />
+    element: (
+      <AuthRequired requireAuth="2" title="未来软件工作室">
+        <StudentApply />
+      </AuthRequired>
+    )
   },
   {
     path: '/pc',
-    element: <PCreact />
+    element: (
+      <AuthRequired requireAuth="2" title="请移步移动端">
+        <PCreact />
+      </AuthRequired>
+    )
   },
   {
     path: '/login',
-    element: <Login />
+    element: (
+      <AuthRequired requireAuth="2" title="登录后台">
+        <Login />
+      </AuthRequired>
+    )
   },
   {
     path: '/success',
-    element: <Success />
+    element: (
+      <AuthRequired requireAuth="2" title="报名成功">
+        <Success />
+      </AuthRequired>
+    )
   },
   {
     path: '/user',

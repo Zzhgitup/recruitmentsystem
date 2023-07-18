@@ -1,18 +1,26 @@
-import React, { FC, ReactNode } from 'react';
+import React, { FC, ReactNode, useEffect } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import { Button, Result } from 'antd';
 interface Props {
   children?: ReactNode;
-  requireAuth?: any;
+  requireAuth?: '0' | '1' | '2';
+  title?: string;
 }
 
-const AuthRequire: FC<Props> = ({ children, requireAuth }) => {
+const AuthRequire: FC<Props> = ({ children, requireAuth, title = '未来招新系统' }) => {
+  useEffect(() => {
+    document.title = title;
+  }, []);
   const navgate = useNavigate();
+  const location = useLocation(); // 记录当前页
   function backhome() {
     navgate('/user');
   }
-  const location = useLocation(); // 记录当前页面
+  if (requireAuth == '2') {
+    //无权限 未登录
+    return <>{children}</>;
+  }
   if (!localStorage.getItem('ZXtoken')) {
     console.log('没有token');
     return <Navigate to={'/login'} replace state={{ from: location }} />;
@@ -21,6 +29,7 @@ const AuthRequire: FC<Props> = ({ children, requireAuth }) => {
   //token是否过期
   if (Date.now() / 1000 - jwtdecode.iat < 86400) {
     if (jwtdecode.power === requireAuth || jwtdecode.power == '1') {
+      console.log(jwtdecode.power);
       return <>{children}</>;
     }
   } else {
@@ -40,7 +49,7 @@ const AuthRequire: FC<Props> = ({ children, requireAuth }) => {
             }}
             type="primary"
           >
-            Back Home
+            返回主页
           </Button>
         }
       />
