@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
 import type { FC, ReactNode } from 'react';
 import type { PaginationProps } from 'antd';
-import { Table, Pagination, Button, Space, Form, Input, Radio, message, Modal, Select } from 'antd';
+import { Table, Pagination, Button, Space, Form, Input, message, Modal, Select } from 'antd';
 import {
   SearchOutlined,
   PlusSquareOutlined,
@@ -13,7 +13,8 @@ import {
   QuestionAdd,
   interviewStatusUpload,
   deleteQuestion,
-  randomQuestion
+  randomQuestion,
+  interviewPlaceUpload
 } from '@/service/modules/user';
 interface IProps {
   children?: ReactNode;
@@ -86,6 +87,18 @@ const Interview: FC<IProps> = () => {
       render: (status: number) => <>{statusToCh(status)}</>
     },
     {
+      title: '面试地点',
+      width: 40,
+      dataIndex: 'interviewPlace',
+      key: 'interviewPlace'
+    },
+    {
+      title: '面试时间',
+      width: 60,
+      dataIndex: 'interviewData',
+      key: 'interviewData'
+    },
+    {
       title: '操作',
       key: 'operation',
       fixed: 'right',
@@ -93,6 +106,7 @@ const Interview: FC<IProps> = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size="middle">
+          <a onClick={() => onUserRevise(record)}>修改</a>
           <a onClick={() => onUserDelete(record)}>刪除</a>
         </Space>
       )
@@ -100,13 +114,12 @@ const Interview: FC<IProps> = () => {
   ];
   const onUserRevise = (data: any) => {
     setUploadOpen(true);
-    const { id, answer, question, typeId, questionBankType } = data;
+    const { id, answer, question, status } = data;
     formUpload.setFieldsValue({
       id,
       answer,
       question,
-      typeId,
-      questionBankType
+      status
     });
   };
   const onUserDelete = (data: any) => {
@@ -117,10 +130,7 @@ const Interview: FC<IProps> = () => {
   const [listdata, setlistdata] = useState<interviewType[]>([]);
   const [pagination, setpagination] = useState({ pageNum: 1, pageSize: 5 });
   const [total, setTotal] = useState(20);
-  const [searchForm, setsearchForm] = useState({
-    questionBankType: 1,
-    typeId: ''
-  });
+  const [searchForm, setsearchForm] = useState({ status: '' });
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -152,12 +162,10 @@ const Interview: FC<IProps> = () => {
   const [formRandom] = Form.useForm();
 
   const invform = {
-    questionBankType: 1,
-    typeId: ''
+    status: ''
   };
   const addInvForm = {
-    questionBankType: 1,
-    typeId: 1
+    status: 1
   };
   const [formADD] = Form.useForm();
   const [formUpload]: any = Form.useForm();
@@ -167,14 +175,10 @@ const Interview: FC<IProps> = () => {
   const onFinish = (values: any) => {
     onReset();
     if (values.time) {
-      setsearchForm({
-        questionBankType: values.questionBankType,
-        typeId: values.typeId
-      });
+      setsearchForm({ status: values.status });
     } else {
       setsearchForm({
-        questionBankType: values.questionBankType,
-        typeId: values.typeId
+        status: values.status
       });
     }
   };
@@ -197,7 +201,7 @@ const Interview: FC<IProps> = () => {
   const onRandomOk = async () => {
     try {
       const values = await formRandom.validateFields();
-      const res = await randomQuestion({ typeId: values.typeId });
+      const res = await randomQuestion({ status: values.status });
       if (res.status == 200) {
         message.success('生成成功！');
         const { answer, question } = res.data;
@@ -248,25 +252,26 @@ const Interview: FC<IProps> = () => {
   };
 
   const deleteIDFn = async () => {
-    try {
-      const ids =
-        deleteForm.id == 0
-          ? selectedRowKeys.map((id) => `ids=${id}`).join('&')
-          : `ids=${deleteForm.id}`;
-      const res = await deleteQuestion(ids);
-      if (res.status == 200) {
-        setpagination({ ...pagination });
-        messageApi.open({
-          type: 'success',
-          content: '删除成功！'
-        });
-        setopenConfirm(false);
-      } else {
-        message.error('删除失败！');
-      }
-    } catch (errorInfo) {
-      console.log('Failed:', errorInfo);
-    }
+    message.info('待开发！');
+    // try {
+    //   const ids =
+    //     deleteForm.id == 0
+    //       ? selectedRowKeys.map((id) => `ids=${id}`).join('&')
+    //       : `ids=${deleteForm.id}`;
+    //   const res = await deleteQuestion(ids);
+    //   if (res.status == 200) {
+    //     setpagination({ ...pagination });
+    //     messageApi.open({
+    //       type: 'success',
+    //       content: '删除成功！'
+    //     });
+    //     setopenConfirm(false);
+    //   } else {
+    //     message.error('删除失败！');
+    //   }
+    // } catch (errorInfo) {
+    //   console.log('Failed:', errorInfo);
+    // }
   };
   const [openConfirm, setopenConfirm] = useState(false);
   const [deleteForm, setdeleteForm] = useState({ id: 1, question: '啊' });
@@ -326,7 +331,7 @@ const Interview: FC<IProps> = () => {
               <Select.Option value={1}>面试</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item label="类型" name="typeId">
+          <Form.Item label="类型" name="status">
             <Select></Select>
           </Form.Item>
         </Form>
@@ -374,7 +379,7 @@ const Interview: FC<IProps> = () => {
               <Select.Option value={1}>面试</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item label="类型" name="typeId">
+          <Form.Item label="类型" name="status">
             <Select></Select>
           </Form.Item>
         </Form>
@@ -409,7 +414,7 @@ const Interview: FC<IProps> = () => {
           <Form.Item label="类别" name="questionBankType">
             <Input readOnly style={{ width: '250px' }} />
           </Form.Item>
-          <Form.Item label="类型" name="typeId" extra="注意：可根据所选的类型进行分类">
+          <Form.Item label="类型" name="status" extra="注意：可根据所选的类型进行分类">
             <Select style={{ width: '250px' }}></Select>
           </Form.Item>
         </Form>
@@ -421,9 +426,15 @@ const Interview: FC<IProps> = () => {
         onFinish={onFinish}
         initialValues={invform}
       >
-        <Form.Item label="类别" name="typeId" style={{ width: '200px' }}>
+        <Form.Item label="状态" name="status" style={{ width: '200px' }}>
           <Select>
-            <Select.Option value={0}>比赛</Select.Option>
+            <Select.Option value={0}>待笔试</Select.Option>
+            <Select.Option value={1}>笔试未通过</Select.Option>
+            <Select.Option value={2}>待面试</Select.Option>
+            <Select.Option value={3}>进入二面</Select.Option>
+            <Select.Option value={4}>进入三面</Select.Option>
+            <Select.Option value={5}>已录取</Select.Option>
+            <Select.Option value={6}>面试未通过</Select.Option>
           </Select>
         </Form.Item>
         <Form.Item>

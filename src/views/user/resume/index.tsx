@@ -157,8 +157,17 @@ const Resume: FC<IProps> = () => {
     try {
       const values = await formUpload.validateFields();
       const formData = new FormData();
-      formData.append('one', values.filePath1.originFileObj);
-      formData.append('two', values.filePath2.originFileObj);
+
+      if (values.filePath1) {
+        formData.append('one', values.filePath1.originFileObj);
+      }
+      if (values.filePath2) {
+        formData.append('two', values.filePath2.originFileObj);
+      }
+      if (!values.filePath2 && !values.filePath1) {
+        message.info('请上传你要修改的文件！');
+        return;
+      }
       const res = await resumeUpload({ id: values.userId }, formData);
       if (res.status == 200) {
         setpagination({ ...pagination });
@@ -356,7 +365,6 @@ const Resume: FC<IProps> = () => {
             name="filePath1"
             valuePropName="filePath1"
             getValueFromEvent={normFile}
-            rules={[{ required: true }]}
           >
             <Upload.Dragger name="filePath1" listType="picture-card" beforeUpload={beforeUpload}>
               <p className="ant-upload-drag-icon">
@@ -370,7 +378,6 @@ const Resume: FC<IProps> = () => {
             name="filePath2"
             valuePropName="filePath2"
             getValueFromEvent={normFile}
-            rules={[{ required: true }]}
           >
             <Upload.Dragger name="filePath2" listType="picture-card" beforeUpload={beforeUpload}>
               <p className="ant-upload-drag-icon">

@@ -185,6 +185,12 @@ export function interviewStatusUpload(params: any) {
     params: params
   });
 }
+export function interviewPlaceUpload(params: any) {
+  return Hyrequire.put({
+    url: '/user/updatePlaceAndTime',
+    params: params
+  });
+}
 
 // export function resumeDelete(data: any) {
 //   return Hyrequire.delete({
