@@ -1,7 +1,11 @@
 const path = require('path');
+const { removeConsolePlugin } = require('./build-utils');
 const CracolessPlugin = require('craco-less');
 //处理less资源
 module.exports = {
+  babel: {
+    /* plugins: [removeConsolePlugin]  消除所有console.log()输出  */
+  },
   webpack: {
     //webpack配置
     // 配置别名

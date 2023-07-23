@@ -35,6 +35,7 @@ export const Container = styled.div`
   .login {
     width: 30vw;
     height: 80vh;
+    min-height: 500px;
     min-width: 300px;
     border-radius: 20px;
     background-color: white;
@@ -46,6 +47,7 @@ export const Container = styled.div`
     padding: 32px;
     transform: translate(-50%, -50%);
     box-shadow: 0px 4px 35px rgba(0, 0, 0, 0.08);
+
     .title {
       font-size: 24px;
     }
@@ -65,8 +67,27 @@ export const Container = styled.div`
       }
       .myselfsub {
         width: 20vw;
+        animation: up-down 1s cubic-bezier(0.54, 0.16, 0.51, 0.98) infinite;
         margin-top: 10vh;
       }
+    }
+  }
+
+  @keyframes up-down {
+    0% {
+      transform: translate(0px, 0px);
+    }
+    25% {
+      transform: translate(-30px, -30px);
+    }
+    50% {
+      transform: translate(0px, 0px);
+    }
+    75% {
+      transform: translate(30px, -30px);
+    }
+    100% {
+      transform: translate(0px, 0px);
     }
   }
 `;

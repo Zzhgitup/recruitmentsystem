@@ -37,6 +37,7 @@ export const userSlice = createSlice({
   initialState: {
     // 初始化 state
     token: '',
+    islogin: false,
     userinfo: {
       username: '张三', // 姓名
       power: 1000, // 年龄
@@ -47,11 +48,13 @@ export const userSlice = createSlice({
     changeuser(state, { payload }) {
       const { username, power, id }: Iuser2 = { ...payload };
       state.userinfo = { username, power, id };
+      state.islogin = true;
     },
     //清除token  退出登录
     outlogin(state) {
       localStorage.removeItem('ZXtoken');
       state.token = '';
+      state.islogin = false;
       state.userinfo = {
         username: '空', // 姓名
         power: -1, // 权力
@@ -61,10 +64,13 @@ export const userSlice = createSlice({
     //token
     savetoken(state, { payload }) {
       state.token = payload;
+    },
+    changeloginState(state, { payload }) {
+      state.islogin = payload;
     }
   } // 定义 reducer 函数
 });
 // 通过 createSlice 自动生成的 action creators，对应 reducers 中的每一个函数
 // 在这里没有定义具体的 reducer 函数，因此没有生成对应的 action creators
 export default userSlice.reducer;
-export const { changeuser, outlogin, savetoken } = userSlice.actions;
+export const { changeuser, outlogin, savetoken, changeloginState } = userSlice.actions;
