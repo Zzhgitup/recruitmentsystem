@@ -221,3 +221,64 @@ export function getScore(data: any) {
 // }
 
 //excel管理
+export function passAll() {
+  return Hyrequire.get({
+    url: '/excel/passAll',
+    responseType: 'blob'
+  });
+}
+
+export function passFirstExcelOne(params: any) {
+  return Hyrequire.get({
+    url: '/excel/passFirstExcelOne',
+    responseType: 'blob',
+    params: params
+  });
+}
+
+export function passFirstExcelTwo(params: any) {
+  return Hyrequire.get({
+    url: '/excel/passFirstExcelTwo',
+    responseType: 'blob',
+    params: params
+  });
+}
+
+export function passSecondExcel(params: any) {
+  return Hyrequire.get({
+    url: '/excel/passSecondExcel',
+    params: params
+  });
+}
+
+export function passSecondExcelTwo(params: any) {
+  return Hyrequire.get({
+    url: '/excel/passSecondExcelTwo',
+    responseType: 'blob',
+    params: params
+  });
+}
+
+export function passWrittenExcelOne(params: any) {
+  return Hyrequire.get({
+    url: '/excel/passWrittenExcelOne',
+    responseType: 'blob',
+    params: params
+  });
+}
+
+export function passWrittenExcelTwo(params: any) {
+  return Hyrequire.get({
+    url: '/excel/passWrittenExcelTwo',
+    responseType: 'blob',
+    params: params
+  });
+}
+
+export function waiteWrittenExcel(params: any) {
+  return Hyrequire.get({
+    url: '/excel/waiteWrittenExcel',
+    responseType: 'blob',
+    params: params
+  });
+}

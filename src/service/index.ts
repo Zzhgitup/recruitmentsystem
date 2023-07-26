@@ -6,7 +6,7 @@ const Hyrequire = new HYrequest({
   interceptor: {
     requestSuccessFn(config) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      config.headers!.Authorization = localStorage.getItem('ZXtoken');
+      config.headers!.token = localStorage.getItem('ZXtoken');
       return config;
     }
   }

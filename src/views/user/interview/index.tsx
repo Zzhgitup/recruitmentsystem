@@ -12,7 +12,8 @@ import {
   Modal,
   Select,
   Radio,
-  DatePicker
+  DatePicker,
+  Tag
 } from 'antd';
 import { SearchOutlined, PlusSquareOutlined, MinusSquareOutlined } from '@ant-design/icons';
 import {
@@ -77,10 +78,14 @@ const Interview: FC<IProps> = () => {
     },
     {
       title: '性别',
-      width: 70,
+      width: 65,
       dataIndex: 'sex',
       key: 'sex',
-      render: (_: any, { sex }: any) => <>{sex == 1 ? '男' : '女'}</>
+      render: (_: any, { sex }: any) => (
+        <>
+          <Tag color={sex === 1 ? 'blue' : 'pink'}>{sex === 1 ? '男' : '女'}</Tag>
+        </>
+      )
     },
     {
       title: '报名时间',
@@ -93,13 +98,22 @@ const Interview: FC<IProps> = () => {
       width: 105,
       dataIndex: 'status',
       key: 'status',
-      render: (status: number) => <>{statusToCh(status)}</>
+      render: (status: number) => (
+        <>
+          <Tag color={status === 5 ? 'green' : 'grey'}>{statusToCh(status)}</Tag>
+        </>
+      )
     },
     {
       title: '面试地点',
       width: 70,
       dataIndex: 'interviewPlace',
       key: 'interviewPlace'
+      // render: (status: string) => (
+      //   <>
+
+      //   </>
+      // )
     },
     {
       title: '面试时间',
@@ -110,6 +124,7 @@ const Interview: FC<IProps> = () => {
     {
       title: '操作',
       key: 'operation',
+      width: 225,
       fixed: 'right',
       dataIndex: 'key',
       render: (_: any, record: any) => (
