@@ -109,7 +109,7 @@ export function resumeUpload(params: any, data: any) {
 
 export function resumeDelete(data: any) {
   return Hyrequire.delete({
-    url: `/questions/question?${data}`
+    url: `/resume/resume?${data}`
   });
 }
 
@@ -172,12 +172,12 @@ export function getUserInfoById(data: any) {
   });
 }
 
-// export function intervieweeAdd( data: any) {
-//   return Hyrequire.post({
-//     url: '/user/interviewee',
-//     data: data,
-//   });
-// }
+export function intervieweesAdd(data: any) {
+  return Hyrequire.post({
+    url: '/user/interviewee',
+    params: data
+  });
+}
 
 export function interviewStatusUpload(params: any) {
   return Hyrequire.put({
@@ -189,6 +189,28 @@ export function interviewPlaceUpload(params: any) {
   return Hyrequire.put({
     url: '/user/updatePlaceAndTime',
     params: params
+  });
+}
+//设置面试官
+export function setInterview(data: any) {
+  return Hyrequire.post({
+    url: '/user/interview',
+    params: data
+  });
+}
+//设置面试分数
+export function setScore(data: any) {
+  return Hyrequire.post({
+    url: '/user/setScore',
+    params: data
+  });
+}
+
+//设置面试分数
+export function getScore(data: any) {
+  return Hyrequire.get({
+    url: '/user/score',
+    params: data
   });
 }
 

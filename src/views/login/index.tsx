@@ -26,7 +26,7 @@ const Login: FC<IProps> = () => {
               content: '登录成功'
             })
             .then(() => {
-              navigate('/user');
+              navigate('/user/interview');
             });
         } else {
           messageApi.open({

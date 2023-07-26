@@ -7,7 +7,8 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   FileDoneOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  TeamOutlined
 } from '@ant-design/icons';
 import { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme, Button } from 'antd';
@@ -20,7 +21,8 @@ const RouterToCH = new Map([
   ['resume', '简历列表'],
   ['questionBank', '题库列表'],
   ['category', '类型分类'],
-  ['excel', '面试导出']
+  ['excel', '面试导出'],
+  ['interviewing', '面试']
 ]);
 const { Header, Content, Sider } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
@@ -39,24 +41,27 @@ function getItem(
     type
   } as MenuItem;
 }
-
 const items: MenuItem[] = [
   getItem('面试管理', 'interviewBox', <MailOutlined />, [
-    getItem('面试列表', 'interview'),
+    getItem('人员列表', 'interview'),
     getItem('结果导出', 'excel')
+    // getItem('人员面试', 'interviewing')
   ]),
   getItem('题库管理', 'questionBankBox', <QuestionCircleOutlined />, [
     getItem('题库列表', 'questionBank'),
     getItem('题库分类', 'category')
   ]),
   getItem('简历管理', 'resume', <FileDoneOutlined />),
-  getItem('面试官管理', 'interviewee', <MailOutlined />)
+  getItem('面试官管理', 'interviewee', <TeamOutlined />)
 ];
 const User: FC<IProps> = () => {
+  const [currentRouter, setCurrent] = useState('interview'); // 设置初始值为home
   const location = useLocation();
   useEffect(() => {
-    setBread([location.pathname.split('/')[2]]);
-  }, []);
+    const path = location.pathname;
+    setCurrent(path.split('/')[2]);
+    setBread([path.split('/')[2]]);
+  }, [location]);
   const [collapsed, setCollapsed] = useState(false);
   const [items2, setItems2]: [any, any] = useState([
     {
@@ -80,6 +85,7 @@ const User: FC<IProps> = () => {
   }
   const navigate = useNavigate();
   const onClickRouter: MenuProps['onClick'] = (e) => {
+    setCurrent(e.key);
     setBread(e.keyPath);
     const toRouter = `${e.key}`;
     navigate(toRouter, { replace: false });
@@ -106,6 +112,7 @@ const User: FC<IProps> = () => {
           theme="dark"
           style={{ height: '100%', borderRight: 0, padding: '10px 0' }}
           items={items}
+          selectedKeys={[currentRouter]}
         />
       </Sider>
       <Layout>

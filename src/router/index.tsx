@@ -6,7 +6,6 @@ import {
   StudentApply,
   Login,
   User,
-  Users,
   QuestionBank,
   Category,
   Resume,
@@ -14,7 +13,8 @@ import {
   Interviewee,
   Success,
   PCreact,
-  Excel
+  Excel,
+  Interviewing
 } from './modules/routes';
 import AuthRequired from '@/components/Auth/AuthRequired';
 const routes: RouteObject[] = [
@@ -117,16 +117,16 @@ const routes: RouteObject[] = [
             <Excel />
           </AuthRequired>
         )
+      },
+      {
+        path: '/user/interviewing',
+        element: (
+          <AuthRequired requireAuth="0">
+            <Interviewing />
+          </AuthRequired>
+        )
       }
     ]
-  },
-  {
-    path: '/users',
-    element: (
-      <AuthRequired requireAuth="0">
-        <Users />
-      </AuthRequired>
-    )
   }
 ];
 export default routes;

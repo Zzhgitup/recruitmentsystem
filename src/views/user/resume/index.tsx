@@ -389,22 +389,26 @@ const Resume: FC<IProps> = () => {
         </Form>
       </Modal>
       <Form
+        style={{ margin: '0 0 10px 0px' }}
         layout="inline"
         form={form}
-        style={{ margin: '0 0 10px 10px' }}
         onFinish={onFinish}
         labelCol={{ span: 5 }}
       >
-        <Form.Item label="姓名" name="name" style={{ maxWidth: '160px' }}>
+        <Form.Item label="姓名" name="name" style={{ maxWidth: '160px', marginBottom: '10px' }}>
           <Input />
         </Form.Item>
-        <Form.Item label="班级" name="claas" style={{ maxWidth: '160px' }}>
+        <Form.Item label="班级" name="claas" style={{ maxWidth: '160px', marginBottom: '10px' }}>
           <Input />
         </Form.Item>
-        <Form.Item label="学号" name="studentId" style={{ maxWidth: '180px' }}>
+        <Form.Item
+          label="学号"
+          name="studentId"
+          style={{ maxWidth: '180px', marginBottom: '10px' }}
+        >
           <Input />
         </Form.Item>
-        <Form.Item label="qq" name="qq" style={{ maxWidth: '180px' }}>
+        <Form.Item label="qq" name="qq" style={{ maxWidth: '180px', marginBottom: '10px' }}>
           <Input />
         </Form.Item>
         <Form.Item label="性别:" name="sex">
@@ -413,7 +417,7 @@ const Resume: FC<IProps> = () => {
             <Radio.Button value={0}>女</Radio.Button>
           </Radio.Group>
         </Form.Item>
-        <Form.Item>
+        <Form.Item style={{ margin: '0 0 10px 10px' }}>
           <Button
             type="primary"
             style={{ marginRight: '10px' }}
