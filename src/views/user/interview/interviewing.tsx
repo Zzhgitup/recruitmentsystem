@@ -1,9 +1,17 @@
 import React, { memo, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
-import { message, Card, Form, Radio, Button, Modal } from 'antd';
+import { message, Card, Form, Radio, Button, Modal, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { userInfo, resumeById, setInterview, setScore, getScore } from '@/service/modules/user';
-import PersonInfo, { PersonInfoType } from '@/components/PersonInfo';
+import {
+  userInfo,
+  resumeById,
+  setInterview,
+  setScore,
+  getScore,
+  interviewStatusUpload,
+  setcomment
+} from '@/service/modules/user';
+import PersonInfo, { PersonInfoType, statusToCh } from '@/components/PersonInfo';
 import ResumeCard, { ResumeInfoType } from '@/components/ResumeCard';
 import jwtDecode from 'jwt-decode';
 // import { useAppselect } from '@/store';
@@ -25,6 +33,7 @@ const scoreArr = [
 const Interviewing: FC<IProps> = () => {
   // const userinfo = useAppselect((state) => state.user);
   // console.log(userinfo);
+
   const [userForm, setuserForm] = useState<PersonInfoType>({
     id: 1,
     claas: 'Class A',
@@ -42,6 +51,8 @@ const Interviewing: FC<IProps> = () => {
     createTime: '2021-08-01 10:00:00'
   });
   const navigator = useNavigate();
+  const [formADD] = Form.useForm();
+  const [openADD, setOpenADD] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   useEffect(() => {
     const userID = sessionStorage.getItem('interviewUserId');
@@ -53,8 +64,12 @@ const Interviewing: FC<IProps> = () => {
   }, []);
   const getUserForm = async (eId: number) => {
     const dataAll = await Promise.all([userInfo({ id: eId }), resumeById({ userId: eId })]);
+    // console.log(dataAll);
+
     if (dataAll[0].status == 200) {
-      setuserForm(dataAll[0].data);
+      console.log(dataAll[0]);
+
+      setuserForm(dataAll[0].data[0]);
     } else {
       message.error('获取信息失败！');
     }
@@ -75,7 +90,10 @@ const Interviewing: FC<IProps> = () => {
     }
   };
   const validateMessages = {
-    required: '请填写您要添加的${label}!'
+    required: '请填写您要添加的${label}!',
+    string: {
+      range: '${label} 应该在 ${min} 到 ${max} 之间'
+    }
   };
   const [scoreForm] = Form.useForm();
   const endInterview = async () => {
@@ -87,8 +105,7 @@ const Interviewing: FC<IProps> = () => {
       intervieweeId: userId,
       level: level
     };
-    scoreForm.setFieldValue('level', level);
-    scoreForm.setFieldValue('intervieweeId', userId);
+    const { comment } = scoreForm.getFieldsValue();
     try {
       const result1 = await setInterview(setInterviewData);
       console.log(result1);
@@ -103,20 +120,44 @@ const Interviewing: FC<IProps> = () => {
       const result3 = await getScore({ id: userId, level: level });
       console.log(result3);
 
-      if (result1.status == 200 && result2.status == 200 && result3.status == 200) {
-        message.success('评分成功！');
+      const result4 = await setcomment({ id: userId, comment, level: level });
+      console.log(result4);
+      setopenConfirm(false);
+      if (result2.status == 200 && result3.status == 200 && result4.status == 200) {
+        message.success('面试成功！');
+        setOpenADD(true);
       } else {
-        message.error('评分失败！');
+        message.error('面试失败！');
       }
+
       // ... 其他异步操作
     } catch (error) {
       console.error(error);
     }
-    console.log(setInterviewData);
-
-    console.log({ ...scoreForm.getFieldsValue(), intervieweeId: userId, level: level });
   };
   const [openConfirm, setopenConfirm] = useState(false);
+  const onAddOk = async () => {
+    const { status } = formADD.getFieldsValue();
+    const id = userForm.id;
+    if (!status) {
+      message.info('请填写他的动向！');
+    }
+    const changeStatusForm = { id, status };
+    console.log(changeStatusForm);
+    try {
+      const res2 = await interviewStatusUpload(changeStatusForm);
+      console.log(res2);
+      if (res2.status == 200) {
+        message.success('面试成功！');
+        setOpenADD(false);
+        navigator('/user/interview');
+      } else {
+        message.error('添加失败！');
+      }
+    } catch (errorInfo) {
+      console.log('Failed:', errorInfo);
+    }
+  };
   return (
     <div>
       {contextHolder}
@@ -132,6 +173,44 @@ const Interviewing: FC<IProps> = () => {
           你确认结束 <span style={{ color: '#1677FF' }}>{userForm.username}</span> 的面试吗？
         </p>
       </Modal>
+      <Modal
+        title="动向"
+        centered
+        open={openADD}
+        onOk={onAddOk}
+        onCancel={() => navigator('/user/interview')}
+        maskClosable={false}
+        width={450}
+        cancelText="结束面试"
+        okText="添加动向"
+      >
+        <Form
+          layout="horizontal"
+          form={formADD}
+          size="large"
+          style={{ marginBottom: '10px' }}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 18 }}
+          name="addFormName"
+        >
+          <Form.Item
+            label="动向"
+            extra="您的选择将左右面试者的去留，请谨慎选择！"
+            rules={[{ required: true }]}
+            name="status"
+          >
+            <Radio.Group>
+              <Radio.Button value={5}>录取</Radio.Button>
+              <Radio.Button value={6}>淘汰</Radio.Button>
+              {userForm.status == 4 || (
+                <Radio.Button value={userForm.status + 1}>
+                  {statusToCh(userForm.status + 1)}
+                </Radio.Button>
+              )}
+            </Radio.Group>
+          </Form.Item>
+        </Form>
+      </Modal>
       <Card title="面试者信息">
         <div className="userCard" style={{ display: 'flex' }}>
           <PersonInfo personInfo={userForm} />
@@ -144,7 +223,7 @@ const Interviewing: FC<IProps> = () => {
           form={scoreForm}
           size="large"
           style={{ marginBottom: '10px' }}
-          labelCol={{ span: 4 }}
+          labelCol={{ span: 3 }}
           validateMessages={validateMessages}
           name="scoreFormName"
           onFinish={() => setopenConfirm(true)}
@@ -169,6 +248,13 @@ const Interviewing: FC<IProps> = () => {
               </Form.Item>
             );
           })}
+          <Form.Item
+            label="面评"
+            name="comment"
+            rules={[{ required: true }, { type: 'string', min: 2, max: 200 }]}
+          >
+            <Input.TextArea placeholder="请填写面评" style={{ maxWidth: '500px' }} />
+          </Form.Item>
           <Form.Item>
             <Button
               type="primary"

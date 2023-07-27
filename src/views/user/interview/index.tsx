@@ -162,6 +162,10 @@ const Interview: FC<IProps> = () => {
       message.info('请先修改面试者的面试状态！');
       return;
     }
+    if (data.status == 5) {
+      message.info('该面试者已被录取！');
+      return;
+    }
     setopenConfirm2(true);
     setinterviewForm({ id: data.id, username: data.username });
   };

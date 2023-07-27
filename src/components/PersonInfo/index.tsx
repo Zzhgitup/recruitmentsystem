@@ -13,7 +13,7 @@ export interface PersonInfoType {
   thirdScore?: number;
   level?: number;
 }
-function statusToCh(num: number) {
+export function statusToCh(num: number) {
   switch (num) {
     case 0:
       return '待笔试';
@@ -31,7 +31,10 @@ function statusToCh(num: number) {
       return '面试未通过';
   }
 }
+
 const PersonInfo: React.FC<{ personInfo: PersonInfoType }> = ({ personInfo }) => {
+  // console.log(personInfo);
+
   return (
     // <Card style={{ width: 300 }} title="面试者信息">
     <Card.Meta

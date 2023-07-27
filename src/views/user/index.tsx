@@ -10,7 +10,8 @@ import {
   QuestionCircleOutlined,
   TeamOutlined,
   UserOutlined,
-  LogoutOutlined
+  LogoutOutlined,
+  DownOutlined
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme, Button, Dropdown, Modal } from 'antd';
 import type { MenuProps } from 'antd';
@@ -71,14 +72,10 @@ const User: FC<IProps> = () => {
   const [currentRouter, setCurrent] = useState('interview'); // 设置初始值为home
   const location = useLocation();
   const dispatch = usedispatch();
-  console.log(jwtDecode(localStorage.getItem('ZXtoken') as string));
-
   useEffect(() => {
     const path = location.pathname;
     setCurrent(path.split('/')[2]);
     setBread([path.split('/')[2]]);
-    console.log();
-
     setuserinfo(jwtDecode(localStorage.getItem('ZXtoken') as string));
   }, [location]);
   const [collapsed, setCollapsed] = useState(false);
@@ -184,6 +181,8 @@ const User: FC<IProps> = () => {
                 <UserOutlined />
                 &ensp;
                 {userinfo.username}
+                &ensp;
+                <DownOutlined />
               </a>
             </Dropdown>
           </div>

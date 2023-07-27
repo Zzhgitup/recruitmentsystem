@@ -206,10 +206,18 @@ export function setScore(data: any) {
   });
 }
 
-//设置面试分数
+//设置得到分数
 export function getScore(data: any) {
   return Hyrequire.get({
     url: '/user/score',
+    params: data
+  });
+}
+
+//设置面评
+export function setcomment(data: any) {
+  return Hyrequire.post({
+    url: '/user/comment',
     params: data
   });
 }
