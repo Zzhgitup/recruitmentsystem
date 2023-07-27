@@ -14,6 +14,7 @@ import {
 import PersonInfo, { PersonInfoType, statusToCh } from '@/components/PersonInfo';
 import ResumeCard, { ResumeInfoType } from '@/components/ResumeCard';
 import jwtDecode from 'jwt-decode';
+import InterviewTable from '@/components/interviewTable';
 // import { useAppselect } from '@/store';
 interface IProps {
   children?: ReactNode;
@@ -45,6 +46,7 @@ const Interviewing: FC<IProps> = () => {
     thirdScore: 90,
     level: 2
   });
+  const [userForms, setuserForms] = useState<PersonInfoType[]>([]);
   const [resume, setresume] = useState<ResumeInfoType>({
     id: '1',
     userId: 123,
@@ -67,8 +69,8 @@ const Interviewing: FC<IProps> = () => {
     // console.log(dataAll);
 
     if (dataAll[0].status == 200) {
-      console.log(dataAll[0]);
-
+      console.log(dataAll[0].data);
+      setuserForms(dataAll[0].data);
       setuserForm(dataAll[0].data[0]);
     } else {
       message.error('获取信息失败！');
@@ -211,11 +213,14 @@ const Interviewing: FC<IProps> = () => {
           </Form.Item>
         </Form>
       </Modal>
-      <Card title="面试者信息">
-        <div className="userCard" style={{ display: 'flex' }}>
+      <Card title="面试者信息" style={{ marginBottom: 10 }}>
+        <div className="userCard" style={{ display: 'flex', paddingBottom: 10 }}>
           <PersonInfo personInfo={userForm} />
-          <ResumeCard resumeInfo={resume} />
+          <InterviewTable interviewTableInfo={userForms} />
         </div>
+      </Card>
+      <Card title="面试者简历" style={{ marginBottom: 10 }}>
+        <ResumeCard resumeInfo={resume} />
       </Card>
       <Card title="面试评分">
         <Form

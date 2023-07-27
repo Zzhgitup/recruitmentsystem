@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, Tag } from 'antd';
 // import { UserOutlined } from '@ant-design/icons';
-
 export interface PersonInfoType {
   id: number;
   claas: string;
@@ -12,6 +11,7 @@ export interface PersonInfoType {
   secondScore?: number;
   thirdScore?: number;
   level?: number;
+  appraise?: string;
 }
 export function statusToCh(num: number) {
   switch (num) {
@@ -31,33 +31,33 @@ export function statusToCh(num: number) {
       return '面试未通过';
   }
 }
-
 const PersonInfo: React.FC<{ personInfo: PersonInfoType }> = ({ personInfo }) => {
   // console.log(personInfo);
 
   return (
-    // <Card style={{ width: 300 }} title="面试者信息">
     <Card.Meta
-      style={{ marginRight: 30 }}
-      // avatar={<Avatar icon={<UserOutlined />} />}
+      style={{ paddingRight: 20, marginRight: 20, borderRight: '1px black dotted' }}
       title={personInfo.username}
       description={
         <>
-          <Tag color={personInfo.sex === 1 ? 'blue' : 'pink'}>
-            {personInfo.sex === 1 ? '男' : '女'}
-          </Tag>
-          <Tag color={personInfo.status === 0 ? 'green' : 'grey'}>
-            {statusToCh(personInfo.status)}
-          </Tag>
-          <p>班级：{personInfo.claas}</p>
-          {personInfo.firstScore == undefined || <p>一面成绩：{personInfo.firstScore}</p>}
-          {personInfo.secondScore == undefined || <p>二面成绩：{personInfo.secondScore}</p>}
-          {personInfo.thirdScore == undefined || <p>三面成绩：{personInfo.thirdScore}</p>}
-          {personInfo.level == undefined || <p>等级：{personInfo.level}</p>}
+          <p>
+            性别：
+            <Tag color={personInfo.sex === 1 ? 'blue' : 'pink'}>
+              {personInfo.sex === 1 ? '男' : '女'}
+            </Tag>
+          </p>
+          <p>
+            面试：
+            <Tag color={personInfo.status === 0 ? 'green' : 'grey'}>
+              {statusToCh(personInfo.status)}
+            </Tag>
+          </p>
+          <p>
+            班级：<strong>{personInfo.claas}</strong>
+          </p>
         </>
       }
     />
-    // </Card>
   );
 };
 

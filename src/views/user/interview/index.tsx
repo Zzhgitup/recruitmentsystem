@@ -552,6 +552,7 @@ const Interview: FC<IProps> = () => {
         pagination={false}
         rowKey={(listdata) => listdata.id}
         rowSelection={rowSelection}
+        loading={listdata.length == 0}
         scroll={{
           x: '100%'
         }}

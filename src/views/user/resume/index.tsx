@@ -456,6 +456,7 @@ const Resume: FC<IProps> = () => {
         pagination={false}
         rowKey={(listdata) => listdata.userId}
         rowSelection={rowSelection}
+        loading={listdata.length == 0}
         scroll={{
           x: '100%'
         }}

@@ -14,7 +14,7 @@ interface Props {
 const ResumeCard: React.FC<Props> = ({ resumeInfo }) => {
   return (
     // <Card title="简历" style={{ marginBottom: 16, width: 450 }}>
-    <div style={{ display: 'flex', paddingLeft: 20, borderLeft: '1px black dotted' }}>
+    <div style={{ display: 'flex' }}>
       {!resumeInfo.filePath1 && <Empty description="该用户暂无简历" />}
       <Image.PreviewGroup>
         {resumeInfo.filePath1 && (

@@ -252,6 +252,7 @@ const Category: FC<IProps> = () => {
         pagination={false}
         rowSelection={rowSelection}
         rowKey={(listdata) => listdata.id}
+        loading={listdata.length == 0}
         scroll={{
           x: '100%'
         }}
