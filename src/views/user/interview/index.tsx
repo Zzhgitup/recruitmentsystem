@@ -13,17 +13,28 @@ import {
   Select,
   Radio,
   DatePicker,
-  Tag
+  Tag,
+  Dropdown
 } from 'antd';
-import { SearchOutlined, PlusSquareOutlined, MinusSquareOutlined } from '@ant-design/icons';
+import {
+  SearchOutlined,
+  PlusSquareOutlined,
+  MinusSquareOutlined,
+  DownOutlined
+} from '@ant-design/icons';
 import {
   allInterviewPage,
   intervieweesAdd,
   interviewStatusUpload,
   // deleteQuestion,
-  interviewPlaceUpload
+  interviewPlaceUpload,
+  resumeById,
+  userInfo
 } from '@/service/modules/user';
 import { useNavigate } from 'react-router-dom';
+import ResumeCard, { ResumeInfoType } from '@/components/ResumeCard';
+import InterviewTable from '@/components/interviewTable';
+import { PersonInfoType } from '@/components/PersonInfo';
 interface IProps {
   children?: ReactNode;
 }
@@ -124,17 +135,46 @@ const Interview: FC<IProps> = () => {
     {
       title: '操作',
       key: 'operation',
-      width: 225,
+      width: 285,
       fixed: 'right',
       dataIndex: 'key',
       render: (_: any, record: any) => (
         <Space size="middle">
+          <a onClick={() => onToInterview(record)}>面试</a>
           <a onClick={() => onInterviewRevise(record)}>地点时间</a>
           <a onClick={() => onStatusRevise(record)}>状态修改</a>
-          <a onClick={() => onToInterview(record)}>面试</a>
-          <a style={{ display: 'none' }} onClick={() => onUserDelete(record)}>
-            刪除
-          </a>
+          <Dropdown
+            dropdownRender={() => (
+              <div
+                style={{
+                  boxShadow:
+                    ' 0 6px 16px 0 rgb(0 0 0 / 8%), 0 3px 6px -4px rgb(0 0 0 / 12%), 0 9px 28px 8px rgb(0 0 0 / 5%)',
+                  padding: 6,
+                  listStyleType: 'none',
+                  backgroundColor: '#ffffff',
+                  borderRadius: 8,
+                  textAlign: 'center'
+                }}
+              >
+                <a
+                  style={{ margin: 5 }}
+                  onClick={() => {
+                    onToResume(record);
+                  }}
+                >
+                  观看简历
+                </a>
+                <a style={{ margin: 5 }} onClick={() => onToEvaluate(record)}>
+                  观看面评
+                </a>
+                <a onClick={() => onUserDelete(record)}>刪除</a>
+              </div>
+            )}
+          >
+            <a>
+              更多 <DownOutlined />
+            </a>
+          </Dropdown>
         </Space>
       )
     }
@@ -169,9 +209,39 @@ const Interview: FC<IProps> = () => {
     setopenConfirm2(true);
     setinterviewForm({ id: data.id, username: data.username });
   };
+  const onToResume = async (data: any) => {
+    setopenResume(true);
+    try {
+      const res = await resumeById({ userId: data.id });
+      if (res.status == 200) {
+        setresume(res.data);
+        message.success('获取成功！');
+      } else {
+        message.error('获取失败！');
+      }
+    } catch {
+      message.error('获取失败！');
+    }
+    console.log(data);
+  };
+  const onToEvaluate = async (data: any) => {
+    setopenEvaluate(true);
+    try {
+      const res = await userInfo({ id: data.id });
+      if (res.status == 200) {
+        setuserForms(res.data);
+        message.success('获取成功！');
+      } else {
+        message.error('获取失败！');
+      }
+    } catch {
+      message.error('获取失败！');
+    }
+    console.log(data);
+  };
   const onUserDelete = (data: any) => {
     setopenConfirm(true);
-    setdeleteForm({ id: data.id, question: data.question });
+    setdeleteForm({ id: data.id, username: data.username });
   };
   const [messageApi, contextHolder] = message.useMessage();
   const [listdata, setlistdata] = useState<interviewType[]>([]);
@@ -327,11 +397,30 @@ const Interview: FC<IProps> = () => {
   };
   const [openConfirm, setopenConfirm] = useState(false);
   const [openConfirm2, setopenConfirm2] = useState(false);
-  const [deleteForm, setdeleteForm] = useState({ id: 1, question: '啊' });
+  const [openResume, setopenResume] = useState(false);
+  const [openEvaluate, setopenEvaluate] = useState(false);
+  const [deleteForm, setdeleteForm] = useState({ id: 1, username: '啊' });
   const [interviewForm, setinterviewForm] = useState({ id: 1, username: '啊' });
+  const [userForms, setuserForms] = useState<PersonInfoType[]>([]);
+  const [resume, setresume] = useState<ResumeInfoType>({
+    id: '1',
+    userId: 123,
+    createTime: '2021-08-01 10:00:00'
+  });
   return (
     <div>
       {contextHolder}
+      <Modal title="观看简历" open={openResume} onCancel={() => setopenResume(false)} footer={null}>
+        <ResumeCard resumeInfo={resume} />
+      </Modal>
+      <Modal
+        title="观看面评"
+        open={openEvaluate}
+        onCancel={() => setopenEvaluate(false)}
+        footer={null}
+      >
+        <InterviewTable interviewTableInfo={userForms} />
+      </Modal>
       <Modal
         title="进入面试"
         open={openConfirm2}
@@ -353,7 +442,7 @@ const Interview: FC<IProps> = () => {
         cancelText="取消"
       >
         <p>
-          你确认删除 <span style={{ color: '#1677FF' }}>{deleteForm.question}</span> 的问题信息吗？
+          你确认删除 <span style={{ color: '#1677FF' }}>{deleteForm.username}</span> 的问题信息吗？
         </p>
       </Modal>
       <Modal
@@ -533,7 +622,7 @@ const Interview: FC<IProps> = () => {
           <Button
             onClick={() => {
               setopenConfirm(true);
-              setdeleteForm({ id: 0, question: '所选问题' });
+              setdeleteForm({ id: 0, username: '所选问题' });
             }}
             danger
             disabled={selectedRowKeys.length == 0}

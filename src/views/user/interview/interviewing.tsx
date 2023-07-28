@@ -69,7 +69,6 @@ const Interviewing: FC<IProps> = () => {
     // console.log(dataAll);
 
     if (dataAll[0].status == 200) {
-      console.log(dataAll[0].data);
       setuserForms(dataAll[0].data);
       setuserForm(dataAll[0].data[0]);
     } else {
@@ -118,22 +117,19 @@ const Interviewing: FC<IProps> = () => {
         level: level
       });
       console.log(result2);
-
+      if (result2.status != 200) throw new Error(result2.msg);
       const result3 = await getScore({ id: userId, level: level });
       console.log(result3);
-
+      if (result3.status != 200) throw new Error(result3.msg);
       const result4 = await setcomment({ id: userId, comment, level: level });
+      if (result4.status != 200) throw new Error(result4.msg);
       console.log(result4);
       setopenConfirm(false);
-      if (result2.status == 200 && result3.status == 200 && result4.status == 200) {
-        message.success('面试成功！');
-        setOpenADD(true);
-      } else {
-        message.error('面试失败！');
-      }
-
+      setOpenADD(true);
+      message.success('面试成功！');
       // ... 其他异步操作
     } catch (error) {
+      message.success('面试出错！');
       console.error(error);
     }
   };

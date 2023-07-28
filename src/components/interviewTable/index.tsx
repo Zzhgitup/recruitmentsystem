@@ -53,11 +53,11 @@ const InterviewTable: React.FC<{ interviewTableInfo: PersonInfoType[] }> = ({
       store: 0
     };
 
-    if (item.firstScore) {
+    if (item.level == 0) {
       obj.store = item.firstScore;
-    } else if (item.secondScore) {
+    } else if (item.level == 1) {
       obj.store = item.secondScore;
-    } else if (item.thirdScore) {
+    } else if (item.level == 2) {
       obj.store = item.thirdScore;
     } else {
       continue;
