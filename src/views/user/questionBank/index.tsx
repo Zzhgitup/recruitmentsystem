@@ -6,7 +6,9 @@ import {
   SearchOutlined,
   PlusSquareOutlined,
   QuestionCircleOutlined,
-  MinusSquareOutlined
+  MinusSquareOutlined,
+  DeleteOutlined,
+  FormOutlined
 } from '@ant-design/icons';
 import {
   getAllQuestion,
@@ -33,7 +35,7 @@ const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 页`;
 const User: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
   const [openRandom, setOpenRandom] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const columns: Array<any> = [
     {
       title: '问题',
@@ -65,11 +67,17 @@ const User: FC<IProps> = () => {
       key: 'operation',
       fixed: 'right',
       dataIndex: 'key',
-      width: 100,
+      width: 200,
       render: (_: any, record: any) => (
-        <Space size="middle">
-          <a onClick={() => onUserRevise(record)}>修改</a>
-          <a onClick={() => onUserDelete(record)}>刪除</a>
+        <Space size="small">
+          <Button type="primary" onClick={() => onUserRevise(record)}>
+            修改
+            <FormOutlined />
+          </Button>
+          <Button danger type="primary" onClick={() => onUserDelete(record)}>
+            刪除
+            <DeleteOutlined />
+          </Button>
         </Space>
       )
     }
@@ -114,6 +122,7 @@ const User: FC<IProps> = () => {
     getUserCb()
       .then((res) => {
         console.log(res);
+        setLoading(false);
         setlistdata(res.data.records);
         setTotal(res.data.total);
       })
@@ -492,7 +501,7 @@ const User: FC<IProps> = () => {
         pagination={false}
         rowKey={(listdata) => listdata.id}
         rowSelection={rowSelection}
-        loading={listdata.length == 0}
+        loading={loading}
         scroll={{
           x: '100%'
         }}

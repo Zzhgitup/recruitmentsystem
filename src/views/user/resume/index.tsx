@@ -18,7 +18,9 @@ import {
   SearchOutlined,
   MinusSquareOutlined,
   PlusSquareOutlined,
-  UploadOutlined
+  UploadOutlined,
+  DeleteOutlined,
+  FormOutlined
 } from '@ant-design/icons';
 import {
   allResumePage,
@@ -41,20 +43,21 @@ export interface resumeType {
 const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 页`;
 const Resume: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const columns: Array<any> = [
     {
       title: '正面',
       dataIndex: 'filePath1',
-      width: 200,
+      width: 160,
       key: 'filePath1',
-      render: (_: any) => <Image placeholder width={200} src={_}></Image>
+      render: (_: any) => <Image placeholder width={160} src={_}></Image>
     },
     {
       title: '反面',
       dataIndex: 'filePath2',
-      width: 200,
+      width: 160,
       key: 'filePath2',
-      render: (_: any) => <Image placeholder width={200} src={_}></Image>
+      render: (_: any) => <Image placeholder width={160} src={_}></Image>
     },
     {
       title: '姓名',
@@ -64,7 +67,7 @@ const Resume: FC<IProps> = () => {
     },
     {
       title: '学号',
-      width: 80,
+      width: 100,
       dataIndex: 'studentId',
       key: 'studentId'
     },
@@ -74,11 +77,17 @@ const Resume: FC<IProps> = () => {
       key: 'operation',
       fixed: 'right',
       dataIndex: 'key',
-      width: 100,
+      width: 200,
       render: (_: any, record: any) => (
         <Space size="middle">
-          <a onClick={() => onUserRevise(record)}>修改</a>
-          <a onClick={() => onUserDelete(record)}>刪除</a>
+          <Button type="primary" onClick={() => onUserRevise(record)}>
+            修改
+            <FormOutlined />
+          </Button>
+          <Button danger type="primary" onClick={() => onUserDelete(record)}>
+            刪除
+            <DeleteOutlined />
+          </Button>
         </Space>
       )
     }
@@ -108,6 +117,7 @@ const Resume: FC<IProps> = () => {
     getUserCb()
       .then((res) => {
         console.log(res);
+        setLoading(false);
         setlistdata(res.data.records);
         setTotal(res.data.total);
       })
@@ -412,7 +422,8 @@ const Resume: FC<IProps> = () => {
           <Input />
         </Form.Item>
         <Form.Item label="性别:" name="sex">
-          <Radio.Group style={{ marginLeft: '10px' }}>
+          <Radio.Group>
+            <Radio.Button value={undefined}>全部</Radio.Button>
             <Radio.Button value={1}>男</Radio.Button>
             <Radio.Button value={0}>女</Radio.Button>
           </Radio.Group>
@@ -456,7 +467,7 @@ const Resume: FC<IProps> = () => {
         pagination={false}
         rowKey={(listdata) => listdata.userId}
         rowSelection={rowSelection}
-        loading={listdata.length == 0}
+        loading={loading}
         scroll={{
           x: '100%'
         }}

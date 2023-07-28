@@ -2,7 +2,12 @@ import React, { memo, useState, useEffect, useCallback } from 'react';
 import type { FC, ReactNode } from 'react';
 import type { PaginationProps, UploadProps } from 'antd';
 import { Table, Button, Space, message, Modal, Pagination, Upload, Tag } from 'antd';
-import { PlusSquareOutlined, InboxOutlined, MinusSquareOutlined } from '@ant-design/icons';
+import {
+  PlusSquareOutlined,
+  InboxOutlined,
+  MinusSquareOutlined,
+  DeleteOutlined
+} from '@ant-design/icons';
 import { allPage, intervieweeDelete, usersAddByfile } from '@/service/modules/user';
 interface IProps {
   children?: ReactNode;
@@ -44,10 +49,13 @@ const Interviewee: FC<IProps> = () => {
       key: 'operation',
       fixed: 'right',
       dataIndex: 'key',
-      width: 100,
+      width: 120,
       render: (_: any, record: any) => (
         <Space size="middle">
-          <a onClick={() => onUserDelete(record)}>刪除</a>
+          <Button danger type="primary" onClick={() => onUserDelete(record)}>
+            刪除
+            <DeleteOutlined />
+          </Button>
         </Space>
       )
     }

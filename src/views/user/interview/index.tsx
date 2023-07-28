@@ -20,7 +20,8 @@ import {
   SearchOutlined,
   PlusSquareOutlined,
   MinusSquareOutlined,
-  DownOutlined
+  DownOutlined,
+  DeleteOutlined
 } from '@ant-design/icons';
 import {
   allInterviewPage,
@@ -49,6 +50,7 @@ const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 页`;
 const Interview: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
   const [openStatusUpload, setStatusUploadOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   function statusToCh(num: number) {
     switch (num) {
@@ -135,13 +137,12 @@ const Interview: FC<IProps> = () => {
     {
       title: '操作',
       key: 'operation',
-      width: 285,
+      width: 200,
       fixed: 'right',
       dataIndex: 'key',
       render: (_: any, record: any) => (
         <Space size="middle">
           <a onClick={() => onToInterview(record)}>面试</a>
-          <a onClick={() => onInterviewRevise(record)}>地点时间</a>
           <a onClick={() => onStatusRevise(record)}>状态修改</a>
           <Dropdown
             dropdownRender={() => (
@@ -156,6 +157,7 @@ const Interview: FC<IProps> = () => {
                   textAlign: 'center'
                 }}
               >
+                <a onClick={() => onInterviewRevise(record)}>面试地点时间</a>
                 <a
                   style={{ margin: 5 }}
                   onClick={() => {
@@ -167,7 +169,10 @@ const Interview: FC<IProps> = () => {
                 <a style={{ margin: 5 }} onClick={() => onToEvaluate(record)}>
                   观看面评
                 </a>
-                <a onClick={() => onUserDelete(record)}>刪除</a>
+                <Button danger onClick={() => onUserDelete(record)}>
+                  刪除
+                  <DeleteOutlined />
+                </Button>
               </div>
             )}
           >
@@ -247,7 +252,7 @@ const Interview: FC<IProps> = () => {
   const [listdata, setlistdata] = useState<interviewType[]>([]);
   const [pagination, setpagination] = useState({ pageNum: 1, pageSize: 5 });
   const [total, setTotal] = useState(20);
-  const [searchForm, setsearchForm] = useState({ status: '' });
+  const [searchForm, setsearchForm] = useState({ status: '', name: '', studentId: '' });
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -267,6 +272,7 @@ const Interview: FC<IProps> = () => {
         console.log(res);
         setlistdata(res.data.records);
         setTotal(res.data.total);
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -290,13 +296,8 @@ const Interview: FC<IProps> = () => {
   };
   const onFinish = (values: any) => {
     onReset();
-    if (values.time) {
-      setsearchForm({ status: values.status });
-    } else {
-      setsearchForm({
-        status: values.status
-      });
-    }
+    const { status, name, studentId } = values;
+    setsearchForm({ status, name, studentId });
   };
   const onAddOk = async () => {
     try {
@@ -591,7 +592,7 @@ const Interview: FC<IProps> = () => {
         onFinish={onFinish}
         initialValues={invform}
       >
-        <Form.Item label="状态" name="status" style={{ width: '200px' }}>
+        <Form.Item label="状态" name="status" style={{ width: '150px' }}>
           <Select>
             <Select.Option value={0}>待笔试</Select.Option>
             <Select.Option value={1}>笔试未通过</Select.Option>
@@ -601,6 +602,12 @@ const Interview: FC<IProps> = () => {
             <Select.Option value={5}>已录取</Select.Option>
             <Select.Option value={6}>面试未通过</Select.Option>
           </Select>
+        </Form.Item>
+        <Form.Item label="姓名" name="name">
+          <Input style={{ maxWidth: '100px' }} />
+        </Form.Item>
+        <Form.Item label="学号" name="studentId">
+          <Input style={{ maxWidth: '130px' }} />
         </Form.Item>
         <Form.Item>
           <Button
@@ -641,7 +648,7 @@ const Interview: FC<IProps> = () => {
         pagination={false}
         rowKey={(listdata) => listdata.id}
         rowSelection={rowSelection}
-        loading={listdata.length == 0}
+        loading={loading}
         scroll={{
           x: '100%'
         }}
