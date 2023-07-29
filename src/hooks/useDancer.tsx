@@ -17,6 +17,7 @@ export default function useDanerceHook<T extends Idancer>(domref: RefObject<HTML
     console.log(currentDom.parentNode);
     const handleMouseMove = (event: MouseEvent) => {
       if (!active || !dom) return;
+
       console.log(active);
       const radius = Math.max(dom.offsetWidth * 0.75, dom.offsetHeight * 0.75);
       // 获取窗口的宽度和高度

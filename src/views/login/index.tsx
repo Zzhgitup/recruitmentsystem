@@ -73,7 +73,13 @@ const Login: FC<IProps> = () => {
               name="username"
               rules={[{ required: true, message: '请输入你的用户名！！！！' }]}
             >
-              <Input className="myselfinpuit" onInput={() => setDanceshow(false)} />
+              <Input
+                className="myselfinpuit"
+                onInput={() => {
+                  setDanceshow(false);
+                  buttonref.current?.classList.add('mysplice');
+                }}
+              />
             </Form.Item>
 
             <Form.Item
@@ -81,7 +87,13 @@ const Login: FC<IProps> = () => {
               name="password"
               rules={[{ required: true, message: '请输入你的密码！！！！' }]}
             >
-              <Input.Password className="myselfinpuit" onInput={() => setDanceshow(false)} />
+              <Input.Password
+                className="myselfinpuit"
+                onInput={() => {
+                  setDanceshow(false);
+                  buttonref.current?.classList.add('mysplice');
+                }}
+              />
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 3, span: 16 }}>
