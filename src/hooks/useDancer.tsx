@@ -37,7 +37,7 @@ export default function useDanerceHook<T extends Idancer>(domref: RefObject<HTML
       const rx = oy / 2;
       const ry = -ox / 2;
 
-      dom.style.transition = `all 0.3                                                                                                                                                                                                                                                                 s ease`;
+      dom.style.transition = `all 0.1s ease`;
       dom.style.transform = `translate(${ox}px,${oy}px) rotateX(${rx}deg) rotateY(${ry}deg)`;
       dom.style.boxShadow = `0px ${Math.abs(oy)}px ${
         (Math.abs(oy) / radius) * 60
