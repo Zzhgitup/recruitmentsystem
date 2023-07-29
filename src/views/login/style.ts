@@ -67,8 +67,8 @@ export const Container = styled.div`
       }
       .myselfsub {
         width: 20vw;
-        animation: up-down 1s cubic-bezier(0.54, 0.16, 0.51, 0.98) infinite;
-        margin-top: 10vh;
+        /*  animation: up-down 1s cubic-bezier(0.54, 0.16, 0.51, 0.98) infinite;
+        margin-top: 10vh; */
       }
     }
   }

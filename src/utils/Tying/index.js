@@ -133,5 +133,4 @@ class Typing extends React.Component {
     return <div ref={(el) => (this.wrapper = el)} className={className} style={style}></div>;
   }
 }
-
 export default Typing;
