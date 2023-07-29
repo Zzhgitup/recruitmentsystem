@@ -16,24 +16,33 @@ export default function useDanerceHook<T extends Idancer>(domref: RefObject<HTML
     setDom(currentDom);
     console.log(currentDom.parentNode);
     const handleMouseMove = (event: MouseEvent) => {
-      if (!active) return;
-      console.log('123');
-      const radius = Math.max(dom!.offsetWidth * 0.75, dom!.offsetHeight * 0.75);
-      const parent: HTMLElement = currentDom.parentNode as HTMLElement;
-      const bx = parent.offsetLeft + dom!.offsetLeft + dom!.offsetWidth / 2;
-      const by = parent.offsetTop + dom!.offsetTop + dom!.offsetHeight / 2;
+      if (!active || !dom) return;
+      const radius = Math.max(dom.offsetWidth * 0.75, dom.offsetHeight * 0.75);
+      // 获取窗口的宽度和高度
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      // 计算舞蹈元素的中心位置相对于窗口的坐标
+      const domRect = dom.getBoundingClientRect();
+      const bx = domRect.left + domRect.width / 2;
+      const by = domRect.top + domRect.height / 2;
+
+      // 计算鼠标指针相对于舞蹈元素中心的距离和角度
       const dist = distanceBetween(event.clientX, event.clientY, bx, by);
       const angle = Math.atan2(event.clientY - by, event.clientX - bx);
-      const ox = -1 * Math.cos(angle) * Math.max(radius - dist, 0);
-      const oy = -1 * Math.sin(angle) * Math.max(radius - dist, 0);
+
+      // 根据窗口大小调整动画效果
+      const ox = (-1 * Math.cos(angle) * Math.max(radius - dist, 0) * windowWidth) / 1440; // 将舞蹈元素的最大位移乘以窗口宽度与标准宽度之间的比例
+      const oy = (-1 * Math.sin(angle) * Math.max(radius - dist, 0) * windowHeight) / 900; // 将舞蹈元素的最大位移乘以窗口高度与标准高度之间的比例
       const rx = oy / 2;
       const ry = -ox / 2;
-      dom!.style.transition = `all 0.1s ease`;
-      dom!.style.transform = `translate(${ox}px,${oy}px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-      dom!.style.boxShadow = `0px ${Math.abs(oy)}px ${
+
+      dom.style.transition = `all 0.1s ease`;
+      dom.style.transform = `translate(${ox}px,${oy}px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      dom.style.boxShadow = `0px ${Math.abs(oy)}px ${
         (Math.abs(oy) / radius) * 40
       }px rgba(0,0,0,0.15)`;
     };
+
     document.addEventListener('mousemove', handleMouseMove);
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
