@@ -1,8 +1,13 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
 import type { FC, ReactNode } from 'react';
 import type { PaginationProps, UploadProps } from 'antd';
-import { Table, Button, Space, message, Modal, Pagination, Upload } from 'antd';
-import { PlusSquareOutlined, InboxOutlined, MinusSquareOutlined } from '@ant-design/icons';
+import { Table, Button, Space, message, Modal, Pagination, Upload, Tag } from 'antd';
+import {
+  PlusSquareOutlined,
+  InboxOutlined,
+  MinusSquareOutlined,
+  DeleteOutlined
+} from '@ant-design/icons';
 import { allPage, intervieweeDelete, usersAddByfile } from '@/service/modules/user';
 interface IProps {
   children?: ReactNode;
@@ -33,17 +38,24 @@ const Interviewee: FC<IProps> = () => {
       width: 100,
       dataIndex: 'sex',
       key: 'sex',
-      render: (_: any, { sex }: any) => <>{sex == 1 ? '男' : '女'}</>
+      render: (_: any, { sex }: any) => (
+        <>
+          <Tag color={sex === 1 ? 'blue' : 'pink'}>{sex === 1 ? '男' : '女'}</Tag>
+        </>
+      )
     },
     {
       title: '操作',
       key: 'operation',
       fixed: 'right',
       dataIndex: 'key',
-      width: 100,
+      width: 120,
       render: (_: any, record: any) => (
         <Space size="middle">
-          <a onClick={() => onUserDelete(record)}>刪除</a>
+          <Button danger type="primary" onClick={() => onUserDelete(record)}>
+            刪除
+            <DeleteOutlined />
+          </Button>
         </Space>
       )
     }
@@ -201,6 +213,7 @@ const Interviewee: FC<IProps> = () => {
         pagination={false}
         rowKey={(listdata) => listdata.id}
         rowSelection={rowSelection}
+        loading={listdata.length == 0}
         scroll={{
           x: '100%'
         }}

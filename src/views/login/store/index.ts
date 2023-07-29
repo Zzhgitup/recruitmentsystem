@@ -60,9 +60,12 @@ export const userSlice = createSlice({
         power: -1, // 权力
         id: -1 //用户ID
       };
+      console.log('0000');
     },
     //token
     savetoken(state, { payload }) {
+      console.log(payload);
+
       state.token = payload;
     },
     changeloginState(state, { payload }) {

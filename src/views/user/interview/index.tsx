@@ -1,20 +1,41 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
 import type { FC, ReactNode } from 'react';
 import type { PaginationProps } from 'antd';
-import { Table, Pagination, Button, Space, Form, Input, Radio, message, Modal, Select } from 'antd';
+import {
+  Table,
+  Pagination,
+  Button,
+  Space,
+  Form,
+  Input,
+  message,
+  Modal,
+  Select,
+  Radio,
+  DatePicker,
+  Tag,
+  Dropdown
+} from 'antd';
 import {
   SearchOutlined,
   PlusSquareOutlined,
-  QuestionCircleOutlined,
-  MinusSquareOutlined
+  MinusSquareOutlined,
+  DownOutlined,
+  DeleteOutlined
 } from '@ant-design/icons';
 import {
   allInterviewPage,
-  QuestionAdd,
+  intervieweesAdd,
   interviewStatusUpload,
-  deleteQuestion,
-  randomQuestion
+  // deleteQuestion,
+  interviewPlaceUpload,
+  resumeById,
+  userInfo
 } from '@/service/modules/user';
+import { useNavigate } from 'react-router-dom';
+import ResumeCard, { ResumeInfoType } from '@/components/ResumeCard';
+import InterviewTable from '@/components/interviewTable';
+import { PersonInfoType } from '@/components/PersonInfo';
 interface IProps {
   children?: ReactNode;
 }
@@ -24,10 +45,13 @@ export interface interviewType {
   answer: string;
   questionBankType: number;
 }
+
 const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 页`;
 const Interview: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
-  const [openRandom, setOpenRandom] = useState(false);
+  const [openStatusUpload, setStatusUploadOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   function statusToCh(num: number) {
     switch (num) {
       case 0:
@@ -49,78 +73,186 @@ const Interview: FC<IProps> = () => {
   const columns: Array<any> = [
     {
       title: '姓名',
-      width: 50,
+      width: 80,
       dataIndex: 'username',
       key: 'username'
     },
     {
       title: '学号',
-      width: 70,
+      width: 120,
       dataIndex: 'studentId',
       key: 'studentId'
     },
     {
       title: '班级',
-      width: 50,
+      width: 85,
       dataIndex: 'claas',
       key: 'claas'
     },
     {
       title: '性别',
-      width: 40,
+      width: 65,
       dataIndex: 'sex',
       key: 'sex',
-      render: (_: any, { sex }: any) => <>{sex == 1 ? '男' : '女'}</>
+      render: (_: any, { sex }: any) => (
+        <>
+          <Tag color={sex === 1 ? 'blue' : 'pink'}>{sex === 1 ? '男' : '女'}</Tag>
+        </>
+      )
     },
     {
       title: '报名时间',
-      width: 60,
+      width: 110,
       dataIndex: 'createTime',
       key: 'createTime'
     },
     {
       title: '状态',
-      width: 100,
+      width: 105,
       dataIndex: 'status',
       key: 'status',
-      render: (status: number) => <>{statusToCh(status)}</>
+      render: (status: number) => (
+        <>
+          <Tag color={status === 5 ? 'green' : 'grey'}>{statusToCh(status)}</Tag>
+        </>
+      )
+    },
+    {
+      title: '面试地点',
+      width: 70,
+      dataIndex: 'interviewPlace',
+      key: 'interviewPlace'
+      // render: (status: string) => (
+      //   <>
+
+      //   </>
+      // )
+    },
+    {
+      title: '面试时间',
+      width: 110,
+      dataIndex: 'interviewData',
+      key: 'interviewData'
     },
     {
       title: '操作',
       key: 'operation',
+      width: 200,
       fixed: 'right',
       dataIndex: 'key',
-      width: 100,
       render: (_: any, record: any) => (
         <Space size="middle">
-          <a onClick={() => onUserDelete(record)}>刪除</a>
+          <a onClick={() => onToInterview(record)}>面试</a>
+          <a onClick={() => onStatusRevise(record)}>状态修改</a>
+          <Dropdown
+            dropdownRender={() => (
+              <div
+                style={{
+                  boxShadow:
+                    ' 0 6px 16px 0 rgb(0 0 0 / 8%), 0 3px 6px -4px rgb(0 0 0 / 12%), 0 9px 28px 8px rgb(0 0 0 / 5%)',
+                  padding: 6,
+                  listStyleType: 'none',
+                  backgroundColor: '#ffffff',
+                  borderRadius: 8,
+                  textAlign: 'center'
+                }}
+              >
+                <a onClick={() => onInterviewRevise(record)}>面试地点时间</a>
+                <a
+                  style={{ margin: 5 }}
+                  onClick={() => {
+                    onToResume(record);
+                  }}
+                >
+                  观看简历
+                </a>
+                <a style={{ margin: 5 }} onClick={() => onToEvaluate(record)}>
+                  观看面评
+                </a>
+                <Button danger onClick={() => onUserDelete(record)}>
+                  刪除
+                  <DeleteOutlined />
+                </Button>
+              </div>
+            )}
+          >
+            <a>
+              更多 <DownOutlined />
+            </a>
+          </Dropdown>
         </Space>
       )
     }
   ];
-  const onUserRevise = (data: any) => {
+  const onStatusRevise = (data: any) => {
+    setStatusUploadOpen(true);
+    const { id, status } = data;
+    formStatusUpload.setFieldsValue({
+      id,
+      status
+    });
+  };
+  const onInterviewRevise = (data: any) => {
     setUploadOpen(true);
-    const { id, answer, question, typeId, questionBankType } = data;
+    const { id, answer, question, status } = data;
     formUpload.setFieldsValue({
       id,
       answer,
       question,
-      typeId,
-      questionBankType
+      status
     });
+  };
+  const onToInterview = (data: any) => {
+    if (data.status == 0) {
+      message.info('请先修改面试者的面试状态！');
+      return;
+    }
+    if (data.status == 5) {
+      message.info('该面试者已被录取！');
+      return;
+    }
+    setopenConfirm2(true);
+    setinterviewForm({ id: data.id, username: data.username });
+  };
+  const onToResume = async (data: any) => {
+    setopenResume(true);
+    try {
+      const res = await resumeById({ userId: data.id });
+      if (res.status == 200) {
+        setresume(res.data);
+        message.success('获取成功！');
+      } else {
+        message.error('获取失败！');
+      }
+    } catch {
+      message.error('获取失败！');
+    }
+    console.log(data);
+  };
+  const onToEvaluate = async (data: any) => {
+    setopenEvaluate(true);
+    try {
+      const res = await userInfo({ id: data.id });
+      if (res.status == 200) {
+        setuserForms(res.data);
+        message.success('获取成功！');
+      } else {
+        message.error('获取失败！');
+      }
+    } catch {
+      message.error('获取失败！');
+    }
+    console.log(data);
   };
   const onUserDelete = (data: any) => {
     setopenConfirm(true);
-    setdeleteForm({ id: data.id, question: data.question });
+    setdeleteForm({ id: data.id, username: data.username });
   };
   const [messageApi, contextHolder] = message.useMessage();
   const [listdata, setlistdata] = useState<interviewType[]>([]);
   const [pagination, setpagination] = useState({ pageNum: 1, pageSize: 5 });
   const [total, setTotal] = useState(20);
-  const [searchForm, setsearchForm] = useState({
-    questionBankType: 1,
-    typeId: ''
-  });
+  const [searchForm, setsearchForm] = useState({ status: '', name: '', studentId: '' });
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -140,6 +272,7 @@ const Interview: FC<IProps> = () => {
         console.log(res);
         setlistdata(res.data.records);
         setTotal(res.data.total);
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -149,39 +282,29 @@ const Interview: FC<IProps> = () => {
     setpagination({ pageSize: 5, pageNum: pageNumber });
   };
   const [form] = Form.useForm();
-  const [formRandom] = Form.useForm();
-
   const invform = {
-    questionBankType: 1,
-    typeId: ''
+    status: ''
   };
   const addInvForm = {
-    questionBankType: 1,
-    typeId: 1
+    status: 1
   };
   const [formADD] = Form.useForm();
   const [formUpload]: any = Form.useForm();
+  const [formStatusUpload]: any = Form.useForm();
   const onReset = () => {
     form.resetFields();
   };
   const onFinish = (values: any) => {
     onReset();
-    if (values.time) {
-      setsearchForm({
-        questionBankType: values.questionBankType,
-        typeId: values.typeId
-      });
-    } else {
-      setsearchForm({
-        questionBankType: values.questionBankType,
-        typeId: values.typeId
-      });
-    }
+    const { status, name, studentId } = values;
+    setsearchForm({ status, name, studentId });
   };
   const onAddOk = async () => {
     try {
       const values = await formADD.validateFields();
-      const res = await QuestionAdd(values);
+      const res = await intervieweesAdd(values);
+      console.log(res);
+
       if (res.status == 200) {
         setpagination({ ...pagination });
         message.success('添加成功！');
@@ -194,30 +317,11 @@ const Interview: FC<IProps> = () => {
       console.log('Failed:', errorInfo);
     }
   };
-  const onRandomOk = async () => {
-    try {
-      const values = await formRandom.validateFields();
-      const res = await randomQuestion({ typeId: values.typeId });
-      if (res.status == 200) {
-        message.success('生成成功！');
-        const { answer, question } = res.data;
-        const questionBankType = res.data.questionBankType ? '笔试' : '面试';
-        formRandom.setFieldsValue({
-          answer,
-          question,
-          questionBankType
-        });
-      } else {
-        message.error('生成失败！');
-      }
-    } catch (errorInfo) {
-      console.log('Failed:', errorInfo);
-    }
-  };
   const onUploadOk = async () => {
     try {
       const values = await formUpload.validateFields();
-      const res = await interviewStatusUpload(values);
+      values.time = values.time.format('YYYY-MM-DD HH:mm:ss');
+      const res = await interviewPlaceUpload(values);
       if (res.status == 200) {
         setpagination({ ...pagination });
         message.success('修改成功！');
@@ -230,17 +334,33 @@ const Interview: FC<IProps> = () => {
       console.log('Failed:', errorInfo);
     }
   };
+  const onStatusUploadOk = async () => {
+    try {
+      const values = await formStatusUpload.validateFields();
+      const res = await interviewStatusUpload(values);
+      if (res.status == 200) {
+        setpagination({ ...pagination });
+        message.success('修改成功！');
+        setStatusUploadOpen(false);
+        formStatusUpload.resetFields();
+      } else {
+        messageApi.open({
+          type: 'error',
+          content: '修改失败！'
+        });
+      }
+    } catch (errorInfo) {
+      console.log('Failed:', errorInfo);
+    }
+  };
   //打开添加框
   const [openADD, setOpenADD] = useState(false);
   const validateMessages = {
     required: '请填写您要添加的${label}!',
     types: {
-      email: '$您输入的{label}不合理 ! ',
-      number: '$您输入的{label}不合理 ! ',
-      string: '$您输入的{label}不合理 !'
-    },
-    number: {
-      range: '${label} must be between ${min} and ${max}'
+      email: '您输入的${label}不合理 ! ',
+      number: '您输入的${label}不合理 ! ',
+      string: '您输入的${label}不合理 !'
     },
     string: {
       range: '${label} 应该在 ${min} 到 ${max} 之间'
@@ -248,33 +368,74 @@ const Interview: FC<IProps> = () => {
   };
 
   const deleteIDFn = async () => {
-    try {
-      const ids =
-        deleteForm.id == 0
-          ? selectedRowKeys.map((id) => `ids=${id}`).join('&')
-          : `ids=${deleteForm.id}`;
-      const res = await deleteQuestion(ids);
-      if (res.status == 200) {
-        setpagination({ ...pagination });
-        messageApi.open({
-          type: 'success',
-          content: '删除成功！'
-        });
-        setopenConfirm(false);
-      } else {
-        message.error('删除失败！');
-      }
-    } catch (errorInfo) {
-      console.log('Failed:', errorInfo);
-    }
+    message.info('待开发！');
+
+    // try {
+    //   const ids =
+    //     deleteForm.id == 0
+    //       ? selectedRowKeys.map((id) => `ids=${id}`).join('&')
+    //       : `ids=${deleteForm.id}`;
+    //   const res = await deleteQuestion(ids);
+    //   if (res.status == 200) {
+    //     setpagination({ ...pagination });
+    //     messageApi.open({
+    //       type: 'success',
+    //       content: '删除成功！'
+    //     });
+    //     setopenConfirm(false);
+    //   } else {
+    //     message.error('删除失败！');
+    //   }
+    // } catch (errorInfo) {
+    //   console.log('Failed:', errorInfo);
+    // }
+  };
+  const ToInterview = async () => {
+    console.log(interviewForm);
+    const userId = interviewForm.id;
+    sessionStorage.setItem('interviewUserId', userId.toString());
+    navigate(`../interviewing`, { replace: false });
   };
   const [openConfirm, setopenConfirm] = useState(false);
-  const [deleteForm, setdeleteForm] = useState({ id: 1, question: '啊' });
+  const [openConfirm2, setopenConfirm2] = useState(false);
+  const [openResume, setopenResume] = useState(false);
+  const [openEvaluate, setopenEvaluate] = useState(false);
+  const [deleteForm, setdeleteForm] = useState({ id: 1, username: '啊' });
+  const [interviewForm, setinterviewForm] = useState({ id: 1, username: '啊' });
+  const [userForms, setuserForms] = useState<PersonInfoType[]>([]);
+  const [resume, setresume] = useState<ResumeInfoType>({
+    id: '1',
+    userId: 123,
+    createTime: '2021-08-01 10:00:00'
+  });
   return (
     <div>
       {contextHolder}
+      <Modal title="观看简历" open={openResume} onCancel={() => setopenResume(false)} footer={null}>
+        <ResumeCard resumeInfo={resume} />
+      </Modal>
       <Modal
-        title="Modal"
+        title="观看面评"
+        open={openEvaluate}
+        onCancel={() => setopenEvaluate(false)}
+        footer={null}
+      >
+        <InterviewTable interviewTableInfo={userForms} />
+      </Modal>
+      <Modal
+        title="进入面试"
+        open={openConfirm2}
+        onOk={ToInterview}
+        onCancel={() => setopenConfirm2(false)}
+        okText="确认"
+        cancelText="取消"
+      >
+        <p>
+          你确认进入 <span style={{ color: '#1677FF' }}>{interviewForm.username}</span> 的面试吗？
+        </p>
+      </Modal>
+      <Modal
+        title="删除信息"
         open={openConfirm}
         onOk={deleteIDFn}
         onCancel={() => setopenConfirm(false)}
@@ -282,11 +443,11 @@ const Interview: FC<IProps> = () => {
         cancelText="取消"
       >
         <p>
-          你确认删除 <span style={{ color: '#1677FF' }}>{deleteForm.question}</span> 的问题信息吗？
+          你确认删除 <span style={{ color: '#1677FF' }}>{deleteForm.username}</span> 的问题信息吗？
         </p>
       </Modal>
       <Modal
-        title="添加问题"
+        title="添加面试者"
         centered
         open={openADD}
         onOk={onAddOk}
@@ -307,32 +468,50 @@ const Interview: FC<IProps> = () => {
           initialValues={addInvForm}
         >
           <Form.Item
-            label="问题"
-            name="question"
-            rules={[{ required: true }, { type: 'string', min: 2, max: 100 }]}
+            label="学号"
+            name="studentId"
+            rules={[{ required: true }, { type: 'string', min: 11, max: 11 }]}
           >
-            <Input.TextArea placeholder="请填写问题" style={{ minWidth: '250px' }} />
+            <Input placeholder="请填写学号" style={{ minWidth: '250px' }} />
           </Form.Item>
           <Form.Item
-            label="回答"
-            name="answer"
-            rules={[{ required: true }, { type: 'string', min: 2, max: 100 }]}
+            label="姓名"
+            name="username"
+            rules={[{ required: true }, { type: 'string', min: 2, max: 10 }]}
           >
-            <Input.TextArea placeholder="请填写回答" style={{ minWidth: '250px' }} />
+            <Input placeholder="请填写姓名" style={{ minWidth: '250px' }} />
           </Form.Item>
-          <Form.Item label="类别" name="questionBankType">
-            <Select>
-              <Select.Option value={0}>笔试</Select.Option>
-              <Select.Option value={1}>面试</Select.Option>
-            </Select>
+          <Form.Item
+            label="班级"
+            name="claas"
+            rules={[{ required: true }, { type: 'string', min: 3, max: 10 }]}
+          >
+            <Input placeholder="请填写班级" style={{ minWidth: '250px' }} />
           </Form.Item>
-          <Form.Item label="类型" name="typeId">
-            <Select></Select>
+          <Form.Item
+            label="邮箱"
+            name="email"
+            rules={[{ required: true }, { type: 'email', min: 3, max: 100 }]}
+          >
+            <Input placeholder="请填写邮箱" style={{ minWidth: '250px' }} />
+          </Form.Item>
+          <Form.Item
+            label="QQ"
+            name="qqNumber"
+            rules={[{ required: true }, { type: 'string', min: 4, max: 15 }]}
+          >
+            <Input placeholder="请填写QQ" style={{ minWidth: '250px' }} />
+          </Form.Item>
+          <Form.Item label="性别" rules={[{ required: true }]} name="sex">
+            <Radio.Group>
+              <Radio value={0}>女</Radio>
+              <Radio value={1}>男</Radio>
+            </Radio.Group>
           </Form.Item>
         </Form>
       </Modal>
       <Modal
-        title="修改问题信息"
+        title="修改面试时间"
         centered
         open={openUpload}
         onOk={onUploadOk}
@@ -355,62 +534,54 @@ const Interview: FC<IProps> = () => {
             <Input />
           </Form.Item>
           <Form.Item
-            label="问题"
-            name="question"
-            rules={[{ required: true }, { type: 'string', min: 2, max: 100 }]}
+            label="面试地点"
+            name="place"
+            rules={[{ required: true }, { type: 'string', min: 2, max: 10 }]}
           >
-            <Input.TextArea placeholder="请填写问题" style={{ minWidth: '250px' }} />
+            <Input placeholder="请填写面试地点" style={{ minWidth: '250px' }} />
           </Form.Item>
-          <Form.Item
-            label="回答"
-            name="answer"
-            rules={[{ required: true }, { type: 'string', min: 2, max: 100 }]}
-          >
-            <Input.TextArea placeholder="请填写回答" style={{ minWidth: '250px' }} />
-          </Form.Item>
-          <Form.Item label="类别" name="questionBankType">
-            <Select>
-              <Select.Option value={0}>笔试</Select.Option>
-              <Select.Option value={1}>面试</Select.Option>
-            </Select>
-          </Form.Item>
-          <Form.Item label="类型" name="typeId">
-            <Select></Select>
+          <Form.Item label="面试时间" name="time" rules={[{ required: true }]}>
+            <DatePicker
+              showTime
+              placeholder="请选择面试时间"
+              style={{ width: '240px' }}
+              format="YYYY-MM-DD HH:mm:ss"
+            />
           </Form.Item>
         </Form>
       </Modal>
       <Modal
-        title="随机一题"
+        title="修改面试状态"
         centered
-        open={openRandom}
-        onOk={onRandomOk}
-        onCancel={() => setOpenRandom(false)}
+        open={openStatusUpload}
+        onOk={onStatusUploadOk}
+        onCancel={() => setStatusUploadOpen(false)}
         width={400}
         cancelText="取消"
-        okText="点击生成随机一题"
+        okText="修改"
       >
         <Form
           layout="horizontal"
-          form={formRandom}
+          form={formStatusUpload}
           size="large"
           style={{ marginBottom: '10px' }}
           labelCol={{ span: 5 }}
-          wrapperCol={{ span: 15 }}
-          validateMessages={validateMessages}
-          name="randomFormName"
+          wrapperCol={{ span: 14 }}
+          name="uploadStatusFormName"
         >
-          <Form.Item label="问题" name="question">
-            <Input.TextArea readOnly style={{ minWidth: '250px' }} />
+          <Form.Item style={{ display: 'none' }} label="id" name="id">
+            <Input />
           </Form.Item>
-          <Form.Item label="回答" name="answer">
-            <Input.TextArea readOnly style={{ minWidth: '250px' }} />
-          </Form.Item>
-
-          <Form.Item label="类别" name="questionBankType">
-            <Input readOnly style={{ width: '250px' }} />
-          </Form.Item>
-          <Form.Item label="类型" name="typeId" extra="注意：可根据所选的类型进行分类">
-            <Select style={{ width: '250px' }}></Select>
+          <Form.Item label="类别" name="status">
+            <Select>
+              <Select.Option value={0}>待笔试</Select.Option>
+              <Select.Option value={1}>笔试未通过</Select.Option>
+              <Select.Option value={2}>待面试</Select.Option>
+              <Select.Option value={3}>进入二面</Select.Option>
+              <Select.Option value={4}>进入三面</Select.Option>
+              <Select.Option value={5}>已录取</Select.Option>
+              <Select.Option value={6}>面试未通过</Select.Option>
+            </Select>
           </Form.Item>
         </Form>
       </Modal>
@@ -421,10 +592,22 @@ const Interview: FC<IProps> = () => {
         onFinish={onFinish}
         initialValues={invform}
       >
-        <Form.Item label="类别" name="typeId" style={{ width: '200px' }}>
+        <Form.Item label="状态" name="status" style={{ width: '150px' }}>
           <Select>
-            <Select.Option value={0}>比赛</Select.Option>
+            <Select.Option value={0}>待笔试</Select.Option>
+            <Select.Option value={1}>笔试未通过</Select.Option>
+            <Select.Option value={2}>待面试</Select.Option>
+            <Select.Option value={3}>进入二面</Select.Option>
+            <Select.Option value={4}>进入三面</Select.Option>
+            <Select.Option value={5}>已录取</Select.Option>
+            <Select.Option value={6}>面试未通过</Select.Option>
           </Select>
+        </Form.Item>
+        <Form.Item label="姓名" name="name">
+          <Input style={{ maxWidth: '100px' }} />
+        </Form.Item>
+        <Form.Item label="学号" name="studentId">
+          <Input style={{ maxWidth: '130px' }} />
         </Form.Item>
         <Form.Item>
           <Button
@@ -446,7 +629,7 @@ const Interview: FC<IProps> = () => {
           <Button
             onClick={() => {
               setopenConfirm(true);
-              setdeleteForm({ id: 0, question: '所选问题' });
+              setdeleteForm({ id: 0, username: '所选问题' });
             }}
             danger
             disabled={selectedRowKeys.length == 0}
@@ -455,14 +638,6 @@ const Interview: FC<IProps> = () => {
             icon={<MinusSquareOutlined />}
           >
             批量删除
-          </Button>
-          <Button
-            onClick={() => setOpenRandom(true)}
-            style={{ backgroundColor: '#0DD068' }}
-            type="primary"
-            icon={<QuestionCircleOutlined />}
-          >
-            随机一题
           </Button>
         </Form.Item>
       </Form>
@@ -473,6 +648,7 @@ const Interview: FC<IProps> = () => {
         pagination={false}
         rowKey={(listdata) => listdata.id}
         rowSelection={rowSelection}
+        loading={loading}
         scroll={{
           x: '100%'
         }}

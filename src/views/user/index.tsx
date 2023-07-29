@@ -7,20 +7,35 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   FileDoneOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  TeamOutlined,
+  UserOutlined,
+  LogoutOutlined,
+  DownOutlined
 } from '@ant-design/icons';
-import { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu, theme, Button } from 'antd';
+import { Breadcrumb, Layout, Menu, theme, Button, Dropdown, Modal } from 'antd';
+import type { MenuProps } from 'antd';
+import { usedispatch } from '@/store';
+import { outlogin } from '../login/store';
+import jwtDecode from 'jwt-decode';
 interface IProps {
   children?: ReactNode;
 }
+interface userRoot {
+  iat: number;
+  id: number;
+  power: string;
+  username: string;
+}
+
 const RouterToCH = new Map([
   ['interview', '面试管理'],
   ['interviewee', '面试官管理'],
   ['resume', '简历列表'],
   ['questionBank', '题库列表'],
   ['category', '类型分类'],
-  ['excel', '面试导出']
+  ['excel', '面试导出'],
+  ['interviewing', '面试']
 ]);
 const { Header, Content, Sider } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
@@ -39,25 +54,37 @@ function getItem(
     type
   } as MenuItem;
 }
-
 const items: MenuItem[] = [
   getItem('面试管理', 'interviewBox', <MailOutlined />, [
-    getItem('面试列表', 'interview'),
+    getItem('人员列表', 'interview'),
     getItem('结果导出', 'excel')
+    // getItem('人员面试', 'interviewing')
   ]),
   getItem('题库管理', 'questionBankBox', <QuestionCircleOutlined />, [
     getItem('题库列表', 'questionBank'),
     getItem('题库分类', 'category')
   ]),
   getItem('简历管理', 'resume', <FileDoneOutlined />),
-  getItem('面试官管理', 'interviewee', <MailOutlined />)
+  getItem('面试官管理', 'interviewee', <TeamOutlined />)
 ];
+
 const User: FC<IProps> = () => {
+  const [currentRouter, setCurrent] = useState('interview'); // 设置初始值为home
   const location = useLocation();
+  const dispatch = usedispatch();
   useEffect(() => {
-    setBread([location.pathname.split('/')[2]]);
-  }, []);
+    const path = location.pathname;
+    setCurrent(path.split('/')[2]);
+    setBread([path.split('/')[2]]);
+    setuserinfo(jwtDecode(localStorage.getItem('ZXtoken') as string));
+  }, [location]);
   const [collapsed, setCollapsed] = useState(false);
+  const [userinfo, setuserinfo] = useState<userRoot>({
+    iat: 23,
+    id: 2,
+    power: 'string',
+    username: 'string'
+  });
   const [items2, setItems2]: [any, any] = useState([
     {
       title: '管理界面'
@@ -74,12 +101,13 @@ const User: FC<IProps> = () => {
   const {
     token: { colorBgContainer }
   } = theme.useToken();
-
+  const [openConfirm, setopenConfirm] = useState(false);
   function setBread(keypath: Array<any>) {
     setItems2([{ title: '管理界面' }, { title: RouterToCH.get(keypath[0]) }]);
   }
   const navigate = useNavigate();
   const onClickRouter: MenuProps['onClick'] = (e) => {
+    setCurrent(e.key);
     setBread(e.keyPath);
     const toRouter = `${e.key}`;
     navigate(toRouter, { replace: false });
@@ -87,8 +115,22 @@ const User: FC<IProps> = () => {
   const maxLayStyle: CSSProperties = {
     minHeight: '100vh'
   };
+
   return (
     <Layout style={maxLayStyle}>
+      <Modal
+        title="退出登录"
+        open={openConfirm}
+        onOk={() => {
+          dispatch(outlogin());
+          navigate('/user/interview');
+        }}
+        onCancel={() => setopenConfirm(false)}
+        okText="确认"
+        cancelText="取消"
+      >
+        <p>你确认要退出登录吗？</p>
+      </Modal>
       <Sider
         trigger={null}
         style={{ background: colorBgContainer }}
@@ -106,10 +148,11 @@ const User: FC<IProps> = () => {
           theme="dark"
           style={{ height: '100%', borderRight: 0, padding: '10px 0' }}
           items={items}
+          selectedKeys={[currentRouter]}
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer, display: 'flex' }}>
+        <Header style={{ padding: 0, background: colorBgContainer, overflow: 'hidden' }}>
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -120,10 +163,29 @@ const User: FC<IProps> = () => {
             style={{
               fontSize: '16px',
               width: 64,
-              height: 64
+              height: 64,
+              float: 'left'
             }}
           />
-          <Breadcrumb style={{ margin: '20px 16px' }} items={items2}></Breadcrumb>
+          <Breadcrumb style={{ margin: '20px 16px', float: 'left' }} items={items2}></Breadcrumb>
+          <div style={{ padding: '0px 16px', float: 'right' }}>
+            <Dropdown
+              dropdownRender={() => (
+                <Button onClick={() => setopenConfirm(true)} type="primary">
+                  <LogoutOutlined />
+                  退出登录
+                </Button>
+              )}
+            >
+              <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+                <UserOutlined />
+                &ensp;
+                {userinfo.username}
+                &ensp;
+                <DownOutlined />
+              </a>
+            </Dropdown>
+          </div>
         </Header>
         <Content
           style={{

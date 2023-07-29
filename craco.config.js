@@ -15,6 +15,7 @@ module.exports = {
     }
   },
   plugins: [{ plugin: CracolessPlugin }],
+  // disableHostCheck: true,
   style: {
     postcss: {
       mode: 'extends',

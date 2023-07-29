@@ -1,7 +1,12 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
 import type { FC, ReactNode } from 'react';
 import { Table, Button, Space, Form, Input, message, Modal } from 'antd';
-import { PlusSquareOutlined, MinusSquareOutlined } from '@ant-design/icons';
+import {
+  PlusSquareOutlined,
+  MinusSquareOutlined,
+  DeleteOutlined,
+  FormOutlined
+} from '@ant-design/icons';
 import { getAllType, typeAdd, typeUpload, deleteType } from '@/service/modules/user';
 interface IProps {
   children?: ReactNode;
@@ -14,6 +19,7 @@ interface SortType {
 const Category: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [loading, setLoading] = useState(true);
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
   };
@@ -34,11 +40,17 @@ const Category: FC<IProps> = () => {
       key: 'operation',
       fixed: 'right',
       dataIndex: 'key',
-      width: 100,
+      width: 200,
       render: (_: any, record: any) => (
         <Space size="middle">
-          <a onClick={() => onUserRevise(record)}>修改</a>
-          <a onClick={() => onUserDelete(record)}>刪除</a>
+          <Button type="primary" onClick={() => onUserRevise(record)}>
+            修改
+            <FormOutlined />
+          </Button>
+          <Button danger type="primary" onClick={() => onUserDelete(record)}>
+            刪除
+            <DeleteOutlined />
+          </Button>
         </Space>
       )
     }
@@ -64,6 +76,7 @@ const Category: FC<IProps> = () => {
     getTypeCb()
       .then((res) => {
         console.log(res);
+        setLoading(false);
         setlistdata(res.data);
       })
       .catch((err) => {
@@ -252,6 +265,7 @@ const Category: FC<IProps> = () => {
         pagination={false}
         rowSelection={rowSelection}
         rowKey={(listdata) => listdata.id}
+        loading={loading}
         scroll={{
           x: '100%'
         }}

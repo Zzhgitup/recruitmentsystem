@@ -18,7 +18,9 @@ import {
   SearchOutlined,
   MinusSquareOutlined,
   PlusSquareOutlined,
-  UploadOutlined
+  UploadOutlined,
+  DeleteOutlined,
+  FormOutlined
 } from '@ant-design/icons';
 import {
   allResumePage,
@@ -41,20 +43,21 @@ export interface resumeType {
 const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 页`;
 const Resume: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const columns: Array<any> = [
     {
       title: '正面',
       dataIndex: 'filePath1',
-      width: 200,
+      width: 160,
       key: 'filePath1',
-      render: (_: any) => <Image placeholder width={200} src={_}></Image>
+      render: (_: any) => <Image placeholder width={160} src={_}></Image>
     },
     {
       title: '反面',
       dataIndex: 'filePath2',
-      width: 200,
+      width: 160,
       key: 'filePath2',
-      render: (_: any) => <Image placeholder width={200} src={_}></Image>
+      render: (_: any) => <Image placeholder width={160} src={_}></Image>
     },
     {
       title: '姓名',
@@ -64,7 +67,7 @@ const Resume: FC<IProps> = () => {
     },
     {
       title: '学号',
-      width: 80,
+      width: 100,
       dataIndex: 'studentId',
       key: 'studentId'
     },
@@ -74,11 +77,17 @@ const Resume: FC<IProps> = () => {
       key: 'operation',
       fixed: 'right',
       dataIndex: 'key',
-      width: 100,
+      width: 200,
       render: (_: any, record: any) => (
         <Space size="middle">
-          <a onClick={() => onUserRevise(record)}>修改</a>
-          <a onClick={() => onUserDelete(record)}>刪除</a>
+          <Button type="primary" onClick={() => onUserRevise(record)}>
+            修改
+            <FormOutlined />
+          </Button>
+          <Button danger type="primary" onClick={() => onUserDelete(record)}>
+            刪除
+            <DeleteOutlined />
+          </Button>
         </Space>
       )
     }
@@ -108,6 +117,7 @@ const Resume: FC<IProps> = () => {
     getUserCb()
       .then((res) => {
         console.log(res);
+        setLoading(false);
         setlistdata(res.data.records);
         setTotal(res.data.total);
       })
@@ -157,8 +167,17 @@ const Resume: FC<IProps> = () => {
     try {
       const values = await formUpload.validateFields();
       const formData = new FormData();
-      formData.append('one', values.filePath1.originFileObj);
-      formData.append('two', values.filePath2.originFileObj);
+
+      if (values.filePath1) {
+        formData.append('one', values.filePath1.originFileObj);
+      }
+      if (values.filePath2) {
+        formData.append('two', values.filePath2.originFileObj);
+      }
+      if (!values.filePath2 && !values.filePath1) {
+        message.info('请上传你要修改的文件！');
+        return;
+      }
       const res = await resumeUpload({ id: values.userId }, formData);
       if (res.status == 200) {
         setpagination({ ...pagination });
@@ -356,7 +375,6 @@ const Resume: FC<IProps> = () => {
             name="filePath1"
             valuePropName="filePath1"
             getValueFromEvent={normFile}
-            rules={[{ required: true }]}
           >
             <Upload.Dragger name="filePath1" listType="picture-card" beforeUpload={beforeUpload}>
               <p className="ant-upload-drag-icon">
@@ -370,7 +388,6 @@ const Resume: FC<IProps> = () => {
             name="filePath2"
             valuePropName="filePath2"
             getValueFromEvent={normFile}
-            rules={[{ required: true }]}
           >
             <Upload.Dragger name="filePath2" listType="picture-card" beforeUpload={beforeUpload}>
               <p className="ant-upload-drag-icon">
@@ -382,31 +399,36 @@ const Resume: FC<IProps> = () => {
         </Form>
       </Modal>
       <Form
+        style={{ margin: '0 0 10px 0px' }}
         layout="inline"
         form={form}
-        style={{ margin: '0 0 10px 10px' }}
         onFinish={onFinish}
         labelCol={{ span: 5 }}
       >
-        <Form.Item label="姓名" name="name" style={{ maxWidth: '160px' }}>
+        <Form.Item label="姓名" name="name" style={{ maxWidth: '160px', marginBottom: '10px' }}>
           <Input />
         </Form.Item>
-        <Form.Item label="班级" name="claas" style={{ maxWidth: '160px' }}>
+        <Form.Item label="班级" name="claas" style={{ maxWidth: '160px', marginBottom: '10px' }}>
           <Input />
         </Form.Item>
-        <Form.Item label="学号" name="studentId" style={{ maxWidth: '180px' }}>
+        <Form.Item
+          label="学号"
+          name="studentId"
+          style={{ maxWidth: '180px', marginBottom: '10px' }}
+        >
           <Input />
         </Form.Item>
-        <Form.Item label="qq" name="qq" style={{ maxWidth: '180px' }}>
+        <Form.Item label="qq" name="qq" style={{ maxWidth: '180px', marginBottom: '10px' }}>
           <Input />
         </Form.Item>
         <Form.Item label="性别:" name="sex">
-          <Radio.Group style={{ marginLeft: '10px' }}>
+          <Radio.Group>
+            <Radio.Button value={undefined}>全部</Radio.Button>
             <Radio.Button value={1}>男</Radio.Button>
             <Radio.Button value={0}>女</Radio.Button>
           </Radio.Group>
         </Form.Item>
-        <Form.Item>
+        <Form.Item style={{ margin: '0 0 10px 10px' }}>
           <Button
             type="primary"
             style={{ marginRight: '10px' }}
@@ -445,6 +467,7 @@ const Resume: FC<IProps> = () => {
         pagination={false}
         rowKey={(listdata) => listdata.userId}
         rowSelection={rowSelection}
+        loading={loading}
         scroll={{
           x: '100%'
         }}
