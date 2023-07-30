@@ -1,18 +1,24 @@
-import React, { memo } from 'react';
-import type { FC, ReactNode } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
+import type { ElementRef, FC, ReactNode } from 'react';
 import { Container } from './style';
 import { Button, Form, Input, message } from 'antd';
 import { usedispatch } from '@/store';
 import { fetchlogin } from './store';
 import { useNavigate } from 'react-router-dom';
+import useDanerceHook from '@/hooks/useDancer';
 interface IProps {
   children?: ReactNode;
 }
-
+interface Idancer {
+  setDanceshow: (show: boolean) => void;
+}
 const Login: FC<IProps> = () => {
+  const buttonref = useRef<HTMLButtonElement>(null);
+  const { setDanceshow } = useDanerceHook<Idancer>(buttonref);
   const dispath = usedispatch();
   const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
+
   const onFinish = (values: any) => {
     console.log('Success:', values);
     //登录
@@ -26,7 +32,7 @@ const Login: FC<IProps> = () => {
               content: '登录成功'
             })
             .then(() => {
-              navigate('/user/interview');
+              navigate('/user');
             });
         } else {
           messageApi.open({
@@ -47,7 +53,7 @@ const Login: FC<IProps> = () => {
         <img src="https://lmy-1311156074.cos.ap-nanjing.myqcloud.com/test/Saly-3@2x.png" alt="" />
       </div>
       <div className="login">
-        <div className="title">Welcome to furture</div>
+        <div className="title">Welcome to future</div>
         <h1 className="logintext">登录</h1>
         <div className="form">
           <Form
@@ -67,7 +73,13 @@ const Login: FC<IProps> = () => {
               name="username"
               rules={[{ required: true, message: '请输入你的用户名！！！！' }]}
             >
-              <Input className="myselfinpuit" />
+              <Input
+                className="myselfinpuit"
+                onInput={() => {
+                  setDanceshow(false);
+                  buttonref.current?.classList.add('mysplice');
+                }}
+              />
             </Form.Item>
 
             <Form.Item
@@ -75,17 +87,24 @@ const Login: FC<IProps> = () => {
               name="password"
               rules={[{ required: true, message: '请输入你的密码！！！！' }]}
             >
-              <Input.Password className="myselfinpuit" />
+              <Input.Password
+                className="myselfinpuit"
+                onInput={() => {
+                  setDanceshow(false);
+                  buttonref.current?.classList.add('mysplice');
+                }}
+              />
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 3, span: 16 }}>
-              <Button type="primary" htmlType="submit" className="myselfsub">
+              <Button type="primary" ref={buttonref} htmlType="submit" className="myselfsub">
                 登录
               </Button>
             </Form.Item>
           </Form>
         </div>
       </div>
+
       <div className="loginright">
         <img src="https://lmy-1311156074.cos.ap-nanjing.myqcloud.com/test/Saly-2@2x.png" alt="" />
       </div>

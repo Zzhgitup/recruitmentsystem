@@ -2,7 +2,6 @@
   "name": "react_music",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://47.116.41.66:9527",
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
     "@reduxjs/toolkit": "^1.9.5",

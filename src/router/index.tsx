@@ -17,6 +17,7 @@ import {
   Interviewing
 } from './modules/routes';
 import AuthRequired from '@/components/Auth/AuthRequired';
+import Testview from '@/views/testview';
 const routes: RouteObject[] = [
   {
     path: '/',
@@ -53,6 +54,10 @@ const routes: RouteObject[] = [
         <Success />
       </AuthRequired>
     )
+  },
+  {
+    path: '/textview',
+    element: <Testview />
   },
   {
     path: '/user',

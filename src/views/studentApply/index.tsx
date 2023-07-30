@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import './css/index.less';
 import { useNavigate } from 'react-router-dom';
@@ -19,11 +19,14 @@ interface IProps {
 }
 
 const StudentApply: FC<IProps> = () => {
-  const food: [string, number, number, string][] = [
-    ['火图网', 340, 200, 'https://lmy-1311156074.cos.ap-nanjing.myqcloud.com/test/p5.png'],
-    ['未来小说网', 20, 40, 'https://lmy-1311156074.cos.ap-nanjing.myqcloud.com/test/p1.png'],
-    ['biubiu音乐', 60, 90, 'https://lmy-1311156074.cos.ap-nanjing.myqcloud.com/test/p6.png']
-  ];
+  const foodresult: [string, number, number, string][] = useMemo(
+    () => [
+      ['火图网', 340, 200, 'https://lmy-1311156074.cos.ap-nanjing.myqcloud.com/test/p5.png'],
+      ['未来小说网', 20, 40, 'https://lmy-1311156074.cos.ap-nanjing.myqcloud.com/test/p1.png'],
+      ['biubiu音乐', 60, 90, 'https://lmy-1311156074.cos.ap-nanjing.myqcloud.com/test/p6.png']
+    ],
+    []
+  );
   const Navgate = useNavigate();
   const [isshow, setshow] = useState(false);
   const confetti = new JSConfetti();
@@ -55,7 +58,7 @@ const StudentApply: FC<IProps> = () => {
             <img src="https://lmy-1311156074.cos.ap-nanjing.myqcloud.com/test/title2.gif" alt="" />
           </div>
           {isshow
-            ? food.map(([emoji, hueA, hueB, title]) => (
+            ? foodresult.map(([emoji, hueA, hueB, title]) => (
                 <Card Scorr_str={emoji} hueA={hueA} hueB={hueB} key={emoji} title={title} />
               ))
             : ''}
