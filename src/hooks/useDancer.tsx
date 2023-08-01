@@ -51,7 +51,6 @@ export default function useDanerceHook<T extends Idancer>(domref: RefObject<HTML
     };
   }, [dom, active]);
   const setDanceshow = (show: boolean) => {
-    console.log('122');
     setActive(show);
   };
   return {
