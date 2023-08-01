@@ -321,7 +321,11 @@ const Resume: FC<IProps> = () => {
             getValueFromEvent={normFile}
             rules={[{ required: true }]}
           >
-            <Upload.Dragger name="filePath1" listType="picture-card" beforeUpload={beforeUpload}>
+            <Upload.Dragger
+              name="filePath1"
+              listType="picture-card"
+              customRequest={() => beforeUpload}
+            >
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />
               </p>
@@ -335,7 +339,11 @@ const Resume: FC<IProps> = () => {
             getValueFromEvent={normFile}
             rules={[{ required: true }]}
           >
-            <Upload.Dragger name="filePath2" listType="picture-card" beforeUpload={beforeUpload}>
+            <Upload.Dragger
+              name="filePath2"
+              listType="picture-card"
+              customRequest={() => beforeUpload}
+            >
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />
               </p>

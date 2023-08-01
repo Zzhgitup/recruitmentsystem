@@ -59,7 +59,7 @@ const User: FC<IProps> = () => {
     {
       title: '类型',
       dataIndex: 'typeName',
-      width: 70,
+      width: 80,
       key: 'typeName'
     },
     {

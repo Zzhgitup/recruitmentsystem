@@ -108,7 +108,10 @@ const Interviewee: FC<IProps> = () => {
   const [openADD, setOpenADD] = useState(false);
   const deleteIDFn = async () => {
     try {
-      const ids = deleteForm.id == 0 ? selectedRowKeys : deleteForm.id;
+      const ids =
+        deleteForm.id == 0
+          ? selectedRowKeys.map((id) => `ids=${id}`).join('&')
+          : `ids=${deleteForm.id}`;
       console.log(ids);
       const res = await intervieweeDelete(ids);
       setSelectedRowKeys([]);
@@ -137,16 +140,8 @@ const Interviewee: FC<IProps> = () => {
   const props: UploadProps = {
     name: 'intervieeFile',
     onChange(info) {
-      const { status } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (status === 'done') {
-        setFileList(info.fileList);
-        message.success(`${info.file.name} 本地上传成功，请点击确定上传.`);
-      } else if (status === 'error') {
-        message.error(`${info.file.name} 上传失败！.`);
-      }
+      setFileList(info.fileList);
+      info.file.status = 'success';
     },
     onDrop() {
       setFileList([]);
@@ -177,7 +172,12 @@ const Interviewee: FC<IProps> = () => {
         cancelText="取消"
         okText="点击确定上传"
       >
-        <Upload.Dragger {...props}>
+        <Upload.Dragger
+          {...props}
+          customRequest={() => {
+            console.log('');
+          }}
+        >
           <p className="ant-upload-drag-icon">
             <InboxOutlined />
           </p>

@@ -137,8 +137,7 @@ export function intervieweeUpload(data: any) {
 
 export function intervieweeDelete(data: any) {
   return Hyrequire.delete({
-    url: '/admin/users',
-    params: data
+    url: `/admin/users?${data}`
   });
 }
 

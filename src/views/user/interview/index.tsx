@@ -20,8 +20,7 @@ import {
   SearchOutlined,
   PlusSquareOutlined,
   MinusSquareOutlined,
-  DownOutlined,
-  DeleteOutlined
+  DownOutlined
 } from '@ant-design/icons';
 import {
   allInterviewPage,
@@ -157,7 +156,7 @@ const Interview: FC<IProps> = () => {
                   textAlign: 'center'
                 }}
               >
-                <a onClick={() => onInterviewRevise(record)}>面试地点时间</a>
+                <a onClick={() => onInterviewRevise(record)}>时间地点</a>
                 <a
                   style={{ margin: 5 }}
                   onClick={() => {
@@ -169,10 +168,7 @@ const Interview: FC<IProps> = () => {
                 <a style={{ margin: 5 }} onClick={() => onToEvaluate(record)}>
                   观看面评
                 </a>
-                <Button danger onClick={() => onUserDelete(record)}>
-                  刪除
-                  <DeleteOutlined />
-                </Button>
+                <a onClick={() => onUserDelete(record)}>刪除</a>
               </div>
             )}
           >

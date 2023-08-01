@@ -78,11 +78,7 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '/user',
-        element: (
-          <AuthRequired requireAuth="0">
-            <QuestionBank />
-          </AuthRequired>
-        )
+        element: <Navigate to="/user/interview" replace></Navigate>
       },
       {
         path: '/user/questionBank',
