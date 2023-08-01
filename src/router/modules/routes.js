@@ -23,6 +23,8 @@ const Interviewing = React.lazy(() => import('@/views/user/interview/interviewin
 const PCreact = React.lazy(() => import('@/views/PCreact'));
 //通知界面
 const Success = React.lazy(() => import('@/views/studentApply/c-child/success'));
+//手机简历管理页面
+const MobileResume = React.lazy(() => import('@/views/mobileResume'));
 export {
   PCreact,
   Success,
@@ -35,5 +37,6 @@ export {
   Interview,
   Resume,
   Interviewee,
-  Interviewing
+  Interviewing,
+  MobileResume
 };

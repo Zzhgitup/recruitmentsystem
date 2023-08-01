@@ -14,14 +14,7 @@ import {
   Modal,
   Upload
 } from 'antd';
-import {
-  SearchOutlined,
-  MinusSquareOutlined,
-  PlusSquareOutlined,
-  UploadOutlined,
-  DeleteOutlined,
-  FormOutlined
-} from '@ant-design/icons';
+import { SearchOutlined, PlusSquareOutlined, UploadOutlined } from '@ant-design/icons';
 import {
   allResumePage,
   resumeAdd,
@@ -29,6 +22,7 @@ import {
   resumeDelete,
   userInfo
 } from '@/service/modules/user';
+import PhotoReception from '@/components/PhotoReception';
 interface IProps {
   children?: ReactNode;
 }
@@ -41,7 +35,7 @@ export interface resumeType {
   username: string;
 }
 const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 页`;
-const Resume: FC<IProps> = () => {
+const MobileResume: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const columns: Array<any> = [
@@ -50,24 +44,24 @@ const Resume: FC<IProps> = () => {
       dataIndex: 'filePath1',
       width: 160,
       key: 'filePath1',
-      render: (_: any) => <Image placeholder width={140} src={_}></Image>
+      render: (_: any) => <Image placeholder width={160} src={_}></Image>
     },
     {
       title: '反面',
       dataIndex: 'filePath2',
       width: 160,
       key: 'filePath2',
-      render: (_: any) => <Image placeholder width={140} src={_}></Image>
+      render: (_: any) => <Image placeholder width={160} src={_}></Image>
     },
     {
       title: '姓名',
-      width: 60,
+      width: 80,
       dataIndex: 'username',
       key: 'username'
     },
     {
       title: '学号',
-      width: 100,
+      width: 120,
       dataIndex: 'studentId',
       key: 'studentId'
     },
@@ -77,16 +71,14 @@ const Resume: FC<IProps> = () => {
       key: 'operation',
       fixed: 'right',
       dataIndex: 'key',
-      width: 200,
+      width: 150,
       render: (_: any, record: any) => (
-        <Space size="middle">
-          <Button type="primary" onClick={() => onUserRevise(record)}>
+        <Space size="small">
+          <Button type="text" onClick={() => onUserRevise(record)}>
             修改
-            <FormOutlined />
           </Button>
-          <Button danger type="primary" onClick={() => onUserDelete(record)}>
+          <Button danger type="text" onClick={() => onUserDelete(record)}>
             刪除
-            <DeleteOutlined />
           </Button>
         </Space>
       )
@@ -129,6 +121,7 @@ const Resume: FC<IProps> = () => {
     setpagination({ pageSize: 5, pageNum: pageNumber });
   };
   const [formADD]: any = Form.useForm();
+  const [formPhoto]: any = Form.useForm();
   const [formUpload]: any = Form.useForm();
   const onFinish = (values: any) => {
     console.log(values);
@@ -156,6 +149,29 @@ const Resume: FC<IProps> = () => {
         setpagination({ ...pagination });
         message.success('添加成功！');
         reopenADD();
+      } else {
+        message.error('添加失败！');
+      }
+    } catch (errorInfo) {
+      console.log('Failed:', errorInfo);
+    }
+  };
+  const onPhotoOk = async () => {
+    try {
+      const values = await formPhoto.validateFields();
+      const reStudentId = await userInfo({ studentId: values.studentId });
+      if (!reStudentId.data) {
+        message.error('你填写的学号不存在！');
+        return;
+      }
+      const formData = new FormData();
+      formData.append('one', values.filePath1);
+      formData.append('two', values.filePath2);
+      const res = await resumeAdd({ id: reStudentId.data[0].id }, formData);
+      if (res.status == 200) {
+        setpagination({ ...pagination });
+        message.success('添加成功！');
+        rePhotoADD();
       } else {
         message.error('添加失败！');
       }
@@ -193,23 +209,21 @@ const Resume: FC<IProps> = () => {
   };
   //打开添加框
   const [openADD, setOpenADD] = useState(false);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [openPhotoADD, setPhotoADD] = useState(false);
   const reopenADD = () => {
     setOpenADD(false);
     formADD.resetFields();
   };
+  const rePhotoADD = () => {
+    setPhotoADD(false);
+    formPhoto.resetFields();
+  };
+
   const reopenUpload = () => {
     setUploadOpen(false);
     formUpload.resetFields();
   };
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange
-  };
   const validateMessages = {
     required: '请填写您要添加的${label}!',
     types: {
@@ -226,10 +240,7 @@ const Resume: FC<IProps> = () => {
   };
   const deleteIDFn = async () => {
     try {
-      const ids =
-        deleteForm.userId == 0
-          ? selectedRowKeys.map((userId) => `ids=${userId}`).join('&')
-          : `ids=${deleteForm.userId}`;
+      const ids = `ids=${deleteForm.userId}`;
       const res = await resumeDelete(ids);
       if (res.status == 200) {
         setpagination({ ...pagination });
@@ -272,6 +283,16 @@ const Resume: FC<IProps> = () => {
       return undefined;
     }
   };
+  const handleUploadPhoto1 = (photo: File | null) => {
+    // handle the uploaded photo here
+    formPhoto.setFieldValue('filePath1', photo);
+    console.log(photo);
+  };
+  const handleUploadPhoto2 = (photo: File | null) => {
+    // handle the uploaded photo here
+    formPhoto.setFieldValue('filePath2', photo);
+    console.log(photo);
+  };
   return (
     <div>
       {contextHolder}
@@ -287,6 +308,58 @@ const Resume: FC<IProps> = () => {
           你确认删除 <span style={{ color: '#1677FF' }}>{deleteForm.username}</span> 的问题信息吗？
         </p>
       </Modal>
+
+      <Modal
+        title="拍照上传"
+        centered
+        open={openPhotoADD}
+        onOk={onPhotoOk}
+        onCancel={() => rePhotoADD()}
+        width={400}
+        cancelText="取消"
+        okText="添加"
+      >
+        {openPhotoADD && (
+          <Form
+            layout="horizontal"
+            labelAlign="left"
+            form={formPhoto}
+            size="large"
+            style={{ marginBottom: '10px' }}
+            labelCol={{ span: 5 }}
+            wrapperCol={{ span: 14 }}
+            validateMessages={validateMessages}
+            name="addFormName"
+          >
+            <Form.Item
+              label="学号"
+              name="studentId"
+              rules={[{ required: true }, { type: 'string', min: 2, max: 100 }]}
+            >
+              <Input placeholder="请填写你要添加同学的学号" style={{ minWidth: '250px' }} />
+            </Form.Item>
+            <Form.Item
+              label="正面"
+              name="filePath1"
+              valuePropName="filePath1"
+              getValueFromEvent={normFile}
+              rules={[{ required: true }]}
+            >
+              <PhotoReception onReturnPhoto={handleUploadPhoto1}></PhotoReception>
+            </Form.Item>
+            <Form.Item
+              label="反面"
+              name="filePath2"
+              valuePropName="filePath2"
+              getValueFromEvent={normFile}
+              rules={[{ required: true }]}
+            >
+              <PhotoReception onReturnPhoto={handleUploadPhoto2}></PhotoReception>
+            </Form.Item>
+          </Form>
+        )}
+      </Modal>
+
       <Modal
         title="简历上传"
         centered
@@ -299,6 +372,7 @@ const Resume: FC<IProps> = () => {
       >
         <Form
           layout="horizontal"
+          labelAlign="left"
           form={formADD}
           size="large"
           style={{ marginBottom: '10px' }}
@@ -321,7 +395,11 @@ const Resume: FC<IProps> = () => {
             getValueFromEvent={normFile}
             rules={[{ required: true }]}
           >
-            <Upload.Dragger name="filePath1" listType="picture-card" beforeUpload={beforeUpload}>
+            <Upload.Dragger
+              customRequest={() => beforeUpload}
+              name="filePath1"
+              listType="picture-card"
+            >
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />
               </p>
@@ -335,7 +413,11 @@ const Resume: FC<IProps> = () => {
             getValueFromEvent={normFile}
             rules={[{ required: true }]}
           >
-            <Upload.Dragger name="filePath2" listType="picture-card" beforeUpload={beforeUpload}>
+            <Upload.Dragger
+              customRequest={() => beforeUpload}
+              name="filePath2"
+              listType="picture-card"
+            >
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />
               </p>
@@ -376,11 +458,7 @@ const Resume: FC<IProps> = () => {
             valuePropName="filePath1"
             getValueFromEvent={normFile}
           >
-            <Upload.Dragger
-              name="filePath1"
-              listType="picture-card"
-              customRequest={() => beforeUpload}
-            >
+            <Upload.Dragger name="filePath1" listType="picture-card" beforeUpload={beforeUpload}>
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />
               </p>
@@ -393,11 +471,7 @@ const Resume: FC<IProps> = () => {
             valuePropName="filePath2"
             getValueFromEvent={normFile}
           >
-            <Upload.Dragger
-              name="filePath2"
-              listType="picture-card"
-              customRequest={() => beforeUpload}
-            >
+            <Upload.Dragger name="filePath2" listType="picture-card" beforeUpload={beforeUpload}>
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />
               </p>
@@ -407,26 +481,23 @@ const Resume: FC<IProps> = () => {
         </Form>
       </Modal>
       <Form
-        style={{ margin: '0 0 10px 0px' }}
-        layout="inline"
+        layout="horizontal"
+        labelCol={{ span: 1 }}
+        wrapperCol={{ span: 4 }}
+        style={{ margin: '20px', maxWidth: 600 }}
         form={form}
         onFinish={onFinish}
-        labelCol={{ span: 5 }}
       >
-        <Form.Item label="姓名" name="name" style={{ maxWidth: '160px', marginBottom: '10px' }}>
+        <Form.Item label="姓名" name="name">
           <Input />
         </Form.Item>
-        <Form.Item label="班级" name="claas" style={{ maxWidth: '160px', marginBottom: '10px' }}>
+        <Form.Item label="班级" name="claas">
           <Input />
         </Form.Item>
-        <Form.Item
-          label="学号"
-          name="studentId"
-          style={{ maxWidth: '180px', marginBottom: '10px' }}
-        >
+        <Form.Item label="学号" name="studentId">
           <Input />
         </Form.Item>
-        <Form.Item label="qq" name="qq" style={{ maxWidth: '180px', marginBottom: '10px' }}>
+        <Form.Item label="qq" name="qq">
           <Input />
         </Form.Item>
         <Form.Item label="性别:" name="sex">
@@ -436,7 +507,7 @@ const Resume: FC<IProps> = () => {
             <Radio.Button value={0}>女</Radio.Button>
           </Radio.Group>
         </Form.Item>
-        <Form.Item style={{ margin: '0 0 10px 10px' }}>
+        <Form.Item>
           <Button
             type="primary"
             style={{ marginRight: '10px' }}
@@ -454,17 +525,12 @@ const Resume: FC<IProps> = () => {
             添加
           </Button>
           <Button
-            onClick={() => {
-              setopenConfirm(true);
-              setdeleteForm({ userId: 0, username: '所选问题' });
-            }}
-            danger
-            disabled={selectedRowKeys.length == 0}
-            style={{ marginRight: '10px' }}
+            onClick={() => setPhotoADD(true)}
+            style={{ backgroundColor: '#0DD068', marginRight: '10px' }}
             type="primary"
-            icon={<MinusSquareOutlined />}
+            icon={<PlusSquareOutlined />}
           >
-            批量删除
+            拍照上传
           </Button>
         </Form.Item>
       </Form>
@@ -474,7 +540,6 @@ const Resume: FC<IProps> = () => {
         dataSource={listdata}
         pagination={false}
         rowKey={(listdata) => listdata.userId}
-        rowSelection={rowSelection}
         loading={loading}
         scroll={{
           x: '100%'
@@ -494,4 +559,4 @@ const Resume: FC<IProps> = () => {
   );
 };
 
-export default memo(Resume);
+export default memo(MobileResume);

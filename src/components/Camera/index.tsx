@@ -111,7 +111,7 @@ const Camera: React.FC<CameraProps> = ({ onUploadPhoto, onUnloadPhoto }) => {
       style={{
         width: '100%',
         height: '100%',
-        position: 'absolute',
+        position: 'fixed',
         top: 0,
         right: 0,
         zIndex: 1000,

@@ -6,6 +6,7 @@ import { usedispatch } from '@/store';
 import { fetchlogin } from './store';
 import { useNavigate } from 'react-router-dom';
 import useDanerceHook from '@/hooks/useDancer';
+import { useMobilorPC } from '@/hooks';
 interface IProps {
   children?: ReactNode;
 }
@@ -32,7 +33,8 @@ const Login: FC<IProps> = () => {
               content: '登录成功'
             })
             .then(() => {
-              navigate('/user');
+              const flag = useMobilorPC();
+              flag ? navigate('/user/interview') : navigate('/mobileResume');
             });
         } else {
           messageApi.open({

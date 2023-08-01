@@ -94,8 +94,8 @@ const User: FC<IProps> = () => {
     }
   ]);
   const allImg = [
-    require('../../assets/img/YiPostLogo.jpg'),
-    require('../../assets/img/YiPostIcon.jpg')
+    require('../../assets/img/bigLogo.jpg'),
+    require('../../assets/img/logoIcon.jpg')
   ];
   const [logoImg, setlogoImg] = useState(0);
   const {

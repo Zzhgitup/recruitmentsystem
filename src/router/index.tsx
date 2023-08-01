@@ -14,7 +14,8 @@ import {
   Success,
   PCreact,
   Excel,
-  Interviewing
+  Interviewing,
+  MobileResume
 } from './modules/routes';
 import AuthRequired from '@/components/Auth/AuthRequired';
 import Testview from '@/views/testview';
@@ -58,6 +59,14 @@ const routes: RouteObject[] = [
   {
     path: '/textview',
     element: <Testview />
+  },
+  {
+    path: '/mobileResume',
+    element: (
+      <AuthRequired requireAuth="0" title="简历管理">
+        <MobileResume />
+      </AuthRequired>
+    )
   },
   {
     path: '/user',

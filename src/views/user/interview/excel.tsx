@@ -71,8 +71,6 @@ const Excel: FC<IProps> = () => {
         layout="horizontal"
         validateMessages={validateMessages}
         form={form}
-        labelCol={{ span: 2 }}
-        wrapperCol={{ span: 8 }}
         style={{ margin: '0 0 10px 10px' }}
         onFinish={onFinish}
       >
