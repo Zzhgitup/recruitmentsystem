@@ -68,7 +68,7 @@ const Interviewee: FC<IProps> = () => {
   const [listdata, setlistdata] = useState<SortType[]>([]);
   const [pagination, setpagination] = useState({ pageNum: 1, pageSize: 5 });
   const [total, setTotal] = useState(20);
-  const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 页`;
+  const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 条`;
   const getUsereCb = useCallback(() => allPage(pagination), [pagination]);
   const onChange: PaginationProps['onChange'] = (pageNumber) => {
     setpagination({ pageSize: 5, pageNum: pageNumber });

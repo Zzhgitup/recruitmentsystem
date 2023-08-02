@@ -45,7 +45,7 @@ export interface interviewType {
   questionBankType: number;
 }
 
-const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 页`;
+const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 条`;
 const Interview: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
   const [openStatusUpload, setStatusUploadOpen] = useState(false);
@@ -190,12 +190,10 @@ const Interview: FC<IProps> = () => {
   };
   const onInterviewRevise = (data: any) => {
     setUploadOpen(true);
-    const { id, answer, question, status } = data;
+    const { id, interviewPlace } = data;
     formUpload.setFieldsValue({
       id,
-      answer,
-      question,
-      status
+      place: interviewPlace
     });
   };
   const onToInterview = (data: any) => {

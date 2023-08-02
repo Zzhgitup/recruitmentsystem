@@ -31,7 +31,7 @@ export interface questionsType {
   answer: string;
   questionBankType: number;
 }
-const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 页`;
+const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 条`;
 const User: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
   const [openRandom, setOpenRandom] = useState(false);

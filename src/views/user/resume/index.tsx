@@ -40,7 +40,7 @@ export interface resumeType {
   studentId: string;
   username: string;
 }
-const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 页`;
+const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 条`;
 const Resume: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -160,6 +160,7 @@ const Resume: FC<IProps> = () => {
         message.error('添加失败！');
       }
     } catch (errorInfo) {
+      message.error('添加失败！');
       console.log('Failed:', errorInfo);
     }
   };
@@ -325,6 +326,7 @@ const Resume: FC<IProps> = () => {
               name="filePath1"
               listType="picture-card"
               customRequest={() => beforeUpload}
+              beforeUpload={beforeUpload}
             >
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />
@@ -343,6 +345,7 @@ const Resume: FC<IProps> = () => {
               name="filePath2"
               listType="picture-card"
               customRequest={() => beforeUpload}
+              beforeUpload={beforeUpload}
             >
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />
@@ -388,6 +391,7 @@ const Resume: FC<IProps> = () => {
               name="filePath1"
               listType="picture-card"
               customRequest={() => beforeUpload}
+              beforeUpload={beforeUpload}
             >
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />
@@ -405,6 +409,7 @@ const Resume: FC<IProps> = () => {
               name="filePath2"
               listType="picture-card"
               customRequest={() => beforeUpload}
+              beforeUpload={beforeUpload}
             >
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />

@@ -34,7 +34,7 @@ export interface resumeType {
   studentId: string;
   username: string;
 }
-const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 页`;
+const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 条`;
 const MobileResume: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -399,6 +399,7 @@ const MobileResume: FC<IProps> = () => {
               customRequest={() => beforeUpload}
               name="filePath1"
               listType="picture-card"
+              beforeUpload={beforeUpload}
             >
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />
@@ -417,6 +418,7 @@ const MobileResume: FC<IProps> = () => {
               customRequest={() => beforeUpload}
               name="filePath2"
               listType="picture-card"
+              beforeUpload={beforeUpload}
             >
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />
@@ -458,7 +460,12 @@ const MobileResume: FC<IProps> = () => {
             valuePropName="filePath1"
             getValueFromEvent={normFile}
           >
-            <Upload.Dragger name="filePath1" listType="picture-card" beforeUpload={beforeUpload}>
+            <Upload.Dragger
+              name="filePath1"
+              listType="picture-card"
+              customRequest={() => beforeUpload}
+              beforeUpload={beforeUpload}
+            >
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />
               </p>
@@ -471,7 +478,12 @@ const MobileResume: FC<IProps> = () => {
             valuePropName="filePath2"
             getValueFromEvent={normFile}
           >
-            <Upload.Dragger name="filePath2" listType="picture-card" beforeUpload={beforeUpload}>
+            <Upload.Dragger
+              name="filePath2"
+              listType="picture-card"
+              customRequest={() => beforeUpload}
+              beforeUpload={beforeUpload}
+            >
               <p className="ant-upload-drag-icon">
                 <UploadOutlined />
               </p>
