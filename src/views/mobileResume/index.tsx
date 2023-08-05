@@ -359,7 +359,6 @@ const MobileResume: FC<IProps> = () => {
           </Form>
         )}
       </Modal>
-
       <Modal
         title="简历上传"
         centered
@@ -399,6 +398,7 @@ const MobileResume: FC<IProps> = () => {
               customRequest={() => beforeUpload}
               name="filePath1"
               listType="picture-card"
+              accept=".png,.jpg,.jpeg,image/png,image/jpg,image/jpeg"
               beforeUpload={beforeUpload}
             >
               <p className="ant-upload-drag-icon">
@@ -418,6 +418,7 @@ const MobileResume: FC<IProps> = () => {
               customRequest={() => beforeUpload}
               name="filePath2"
               listType="picture-card"
+              accept=".png,.jpg,.jpeg,image/png,image/jpg,image/jpeg"
               beforeUpload={beforeUpload}
             >
               <p className="ant-upload-drag-icon">
@@ -463,6 +464,7 @@ const MobileResume: FC<IProps> = () => {
             <Upload.Dragger
               name="filePath1"
               listType="picture-card"
+              accept=".png,.jpg,.jpeg,image/png,image/jpg,image/jpeg"
               customRequest={() => beforeUpload}
               beforeUpload={beforeUpload}
             >
@@ -481,6 +483,7 @@ const MobileResume: FC<IProps> = () => {
             <Upload.Dragger
               name="filePath2"
               listType="picture-card"
+              accept=".png,.jpg,.jpeg,image/png,image/jpg,image/jpeg"
               customRequest={() => beforeUpload}
               beforeUpload={beforeUpload}
             >

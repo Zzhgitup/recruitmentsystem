@@ -325,6 +325,7 @@ const Resume: FC<IProps> = () => {
             <Upload.Dragger
               name="filePath1"
               listType="picture-card"
+              accept=".png,.jpg,.jpeg,image/png,image/jpg,image/jpeg"
               customRequest={() => beforeUpload}
               beforeUpload={beforeUpload}
             >
@@ -344,6 +345,7 @@ const Resume: FC<IProps> = () => {
             <Upload.Dragger
               name="filePath2"
               listType="picture-card"
+              accept=".png,.jpg,.jpeg,image/png,image/jpg,image/jpeg"
               customRequest={() => beforeUpload}
               beforeUpload={beforeUpload}
             >
@@ -390,6 +392,7 @@ const Resume: FC<IProps> = () => {
             <Upload.Dragger
               name="filePath1"
               listType="picture-card"
+              accept=".png,.jpg,.jpeg,image/png,image/jpg,image/jpeg"
               customRequest={() => beforeUpload}
               beforeUpload={beforeUpload}
             >
@@ -408,6 +411,7 @@ const Resume: FC<IProps> = () => {
             <Upload.Dragger
               name="filePath2"
               listType="picture-card"
+              accept=".png,.jpg,.jpeg,image/png,image/jpg,image/jpeg"
               customRequest={() => beforeUpload}
               beforeUpload={beforeUpload}
             >
