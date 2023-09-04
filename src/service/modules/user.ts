@@ -141,6 +141,12 @@ export function intervieweeDelete(data: any) {
   });
 }
 
+export function intervieweesDelete(data: any) {
+  return Hyrequire.delete({
+    url: `/user/interviewee?${data}`
+  });
+}
+
 export function usersAddByfile(data: any) {
   return Hyrequire.post({
     url: '/admin/users',

@@ -26,7 +26,7 @@ import {
   allInterviewPage,
   intervieweesAdd,
   interviewStatusUpload,
-  // deleteQuestion,
+  intervieweesDelete,
   interviewPlaceUpload,
   resumeById,
   userInfo
@@ -362,27 +362,25 @@ const Interview: FC<IProps> = () => {
   };
 
   const deleteIDFn = async () => {
-    message.info('待开发！');
-
-    // try {
-    //   const ids =
-    //     deleteForm.id == 0
-    //       ? selectedRowKeys.map((id) => `ids=${id}`).join('&')
-    //       : `ids=${deleteForm.id}`;
-    //   const res = await deleteQuestion(ids);
-    //   if (res.status == 200) {
-    //     setpagination({ ...pagination });
-    //     messageApi.open({
-    //       type: 'success',
-    //       content: '删除成功！'
-    //     });
-    //     setopenConfirm(false);
-    //   } else {
-    //     message.error('删除失败！');
-    //   }
-    // } catch (errorInfo) {
-    //   console.log('Failed:', errorInfo);
-    // }
+    try {
+      const ids =
+        deleteForm.id == 0
+          ? selectedRowKeys.map((id) => `ids=${id}`).join('&')
+          : `ids=${deleteForm.id}`;
+      const res = await intervieweesDelete(ids);
+      if (res.status == 200) {
+        setpagination({ ...pagination });
+        messageApi.open({
+          type: 'success',
+          content: '删除成功！'
+        });
+        setopenConfirm(false);
+      } else {
+        message.error('删除失败！');
+      }
+    } catch (errorInfo) {
+      console.log('Failed:', errorInfo);
+    }
   };
   const ToInterview = async () => {
     console.log(interviewForm);
