@@ -16,6 +16,7 @@ import ResumeCard, { ResumeInfoType } from '@/components/ResumeCard';
 import jwtDecode from 'jwt-decode';
 import InterviewTable from '@/components/interviewTable';
 import QuestionBankCard from '@/components/QuestionBankCard';
+import { SendOutlined } from '@ant-design/icons';
 // import { useAppselect } from '@/store';
 interface IProps {
   children?: ReactNode;
@@ -273,7 +274,7 @@ const Interviewing: FC<IProps> = () => {
             <Button
               type="primary"
               style={{ marginLeft: '80px' }}
-              // icon={<SearchOutlined />}
+              icon={<SendOutlined />}
               htmlType="submit"
             >
               结束面试
