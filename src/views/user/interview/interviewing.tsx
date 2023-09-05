@@ -15,6 +15,7 @@ import PersonInfo, { PersonInfoType, statusToCh } from '@/components/PersonInfo'
 import ResumeCard, { ResumeInfoType } from '@/components/ResumeCard';
 import jwtDecode from 'jwt-decode';
 import InterviewTable from '@/components/interviewTable';
+import QuestionBankCard from '@/components/QuestionBankCard';
 // import { useAppselect } from '@/store';
 interface IProps {
   children?: ReactNode;
@@ -55,6 +56,7 @@ const Interviewing: FC<IProps> = () => {
   const navigator = useNavigate();
   const [formADD] = Form.useForm();
   const [openADD, setOpenADD] = useState(false);
+  const [openQuestion, setopenQuestion] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   useEffect(() => {
     const userID = sessionStorage.getItem('interviewUserId');
@@ -110,7 +112,6 @@ const Interviewing: FC<IProps> = () => {
     try {
       const result1 = await setInterview(setInterviewData);
       console.log(result1);
-
       const result2 = await setScore({
         ...scoreForm.getFieldsValue(),
         intervieweeId: userId,
@@ -209,15 +210,27 @@ const Interviewing: FC<IProps> = () => {
           </Form.Item>
         </Form>
       </Modal>
-      <Card title="面试者信息" style={{ marginBottom: 10 }}>
-        <div className="userCard" style={{ display: 'flex', paddingBottom: 10 }}>
-          <PersonInfo personInfo={userForm} />
-          <InterviewTable interviewTableInfo={userForms} />
-        </div>
-      </Card>
-      <Card title="面试者简历" style={{ marginBottom: 10 }}>
-        <ResumeCard resumeInfo={resume} />
-      </Card>
+      <Modal
+        title="观看面试题"
+        open={openQuestion}
+        onCancel={() => setopenQuestion(false)}
+        width={800}
+        style={{ top: 20 }}
+        footer={null}
+      >
+        <QuestionBankCard />
+      </Modal>
+      <div style={{ display: 'flex', width: '100%' }}>
+        <Card title="面试者信息" style={{ marginBottom: 10 }}>
+          <div className="userCard" style={{ display: 'flex', paddingBottom: 10 }}>
+            <PersonInfo personInfo={userForm} />
+            <InterviewTable interviewTableInfo={userForms} />
+          </div>
+        </Card>
+        <Card title="面试者简历" style={{ marginBottom: 10 }}>
+          <ResumeCard resumeInfo={resume} />
+        </Card>
+      </div>
       <Card title="面试评分">
         <Form
           layout="horizontal"
@@ -264,6 +277,16 @@ const Interviewing: FC<IProps> = () => {
               htmlType="submit"
             >
               结束面试
+            </Button>
+            <Button
+              style={{ marginLeft: '40px', backgroundColor: '#0DD068' }}
+              // icon={<SearchOutlined />}
+              type="primary"
+              onClick={() => {
+                setopenQuestion(true);
+              }}
+            >
+              查找面试题
             </Button>
           </Form.Item>
         </Form>

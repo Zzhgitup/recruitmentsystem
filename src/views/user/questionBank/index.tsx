@@ -32,7 +32,7 @@ export interface questionsType {
   questionBankType: number;
 }
 const showTotal: PaginationProps['showTotal'] = (total) => `共 ${total} 条`;
-const User: FC<IProps> = () => {
+const QuestionBank: FC<IProps> = () => {
   const [openUpload, setUploadOpen] = useState(false);
   const [openRandom, setOpenRandom] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -520,4 +520,4 @@ const User: FC<IProps> = () => {
   );
 };
 
-export default memo(User);
+export default memo(QuestionBank);

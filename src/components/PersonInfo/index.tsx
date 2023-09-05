@@ -36,7 +36,7 @@ const PersonInfo: React.FC<{ personInfo: PersonInfoType }> = ({ personInfo }) =>
 
   return (
     <Card.Meta
-      style={{ paddingRight: 20, marginRight: 20, borderRight: '1px black dotted' }}
+      style={{ paddingRight: 10, marginRight: 10, borderRight: '1px black dotted', width: '120px' }}
       title={personInfo.username}
       description={
         <>
