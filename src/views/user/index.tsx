@@ -171,7 +171,11 @@ const User: FC<IProps> = () => {
           <div style={{ padding: '0px 16px', float: 'right' }}>
             <Dropdown
               dropdownRender={() => (
-                <Button onClick={() => setopenConfirm(true)} type="primary">
+                <Button
+                  style={{ position: 'relative', top: '-12px', left: '12px' }}
+                  onClick={() => setopenConfirm(true)}
+                  type="primary"
+                >
                   <LogoutOutlined />
                   退出登录
                 </Button>
