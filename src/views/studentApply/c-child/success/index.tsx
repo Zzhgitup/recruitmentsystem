@@ -6,6 +6,7 @@ import './css/index.less';
 interface Props {
   childern?: ReactNode;
 }
+//报名成功或者重复报名，到达此页面
 const Success: FC<Props> = () => {
   const {
     state: { flag, text, title }
@@ -16,7 +17,7 @@ const Success: FC<Props> = () => {
       <Result status={flag} title={title} subTitle={text} extra={[]} />
       <div className="successQR">
         <Space direction="vertical" align="center">
-          <QRCode value="https://ant.design/" />
+          <QRCode value="https://qm.qq.com/q/apzRLG04h2" />
           {/*  <Input
             placeholder="-"
             maxLength={60}
