@@ -40,7 +40,6 @@ const StudentApply: FC<IProps> = () => {
   useEffect(() => {
     showConfetti(); //开屏动画
     const flag = useMobilorPC();
-    console.log('手机还是电脑', flag);
     flag ? Navgate('/pc') : Navgate('/studentApply');
   }, []);
   return (

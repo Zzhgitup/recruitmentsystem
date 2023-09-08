@@ -161,7 +161,8 @@ const Information: FC<Props> = () => {
             rules={[
               {
                 required: true,
-                message: '请输入QQ'
+                message: '请输入QQ',
+                pattern: /^[1-9][0-9]{4,10}$/
               }
             ]}
             validateStatus="success"
