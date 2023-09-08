@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 /.vscode
+/.idea
 .pnp.js
 
 # testing
@@ -11,6 +12,7 @@
 
 # production
 /build
+/build.zip
 
 # misc
 .DS_Store
