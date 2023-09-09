@@ -30,8 +30,8 @@ const Camera: React.FC<CameraProps> = ({ onUploadPhoto, onUnloadPhoto }) => {
     navigator.mediaDevices
       .getUserMedia({
         video: {
-          width: 1080,
-          height: 1920,
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
           frameRate: 30,
           facingMode: state.facing
         },
@@ -73,11 +73,16 @@ const Camera: React.FC<CameraProps> = ({ onUploadPhoto, onUnloadPhoto }) => {
   const handleTakePicture = () => {
     const context = canvasRef.current?.getContext('2d');
     if (state.width && state.height) {
-      canvasRef.current?.setAttribute('width', state.width.toString());
-      canvasRef.current?.setAttribute('height', state.height.toString());
-      context?.drawImage(videoRef.current as HTMLVideoElement, 0, 0, state.width, state.height);
-      const data = canvasRef.current?.toDataURL('image/jpeg', 1);
-      setState({ ...state, photo: data });
+      // Use the actual video dimensions to set the canvas size.
+      const videoWidth = videoRef.current?.videoWidth;
+      const videoHeight = videoRef.current?.videoHeight;
+      if (videoWidth && videoHeight) {
+        canvasRef.current?.setAttribute('width', videoWidth.toString());
+        canvasRef.current?.setAttribute('height', videoHeight.toString());
+        context?.drawImage(videoRef.current as HTMLVideoElement, 0, 0, videoWidth, videoHeight);
+        const data = canvasRef.current?.toDataURL('image/jpeg', 1);
+        setState({ ...state, photo: data });
+      }
     } else {
       console.log('Error capturing photo.');
     }
