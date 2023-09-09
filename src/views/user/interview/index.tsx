@@ -227,6 +227,8 @@ const Interview: FC<IProps> = () => {
     setopenEvaluate(true);
     try {
       const res = await userInfo({ id: data.id });
+      console.log(res);
+
       if (res.status == 200) {
         setuserForms(res.data);
         message.success('获取成功！');
@@ -435,7 +437,7 @@ const Interview: FC<IProps> = () => {
         cancelText="取消"
       >
         <p>
-          你确认删除 <span style={{ color: '#1677FF' }}>{deleteForm.username}</span> 的问题信息吗？
+          你确认删除 <span style={{ color: '#1677FF' }}>{deleteForm.username}</span> 的信息吗？
         </p>
       </Modal>
       <Modal
