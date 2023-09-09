@@ -621,7 +621,7 @@ const Interview: FC<IProps> = () => {
           <Button
             onClick={() => {
               setopenConfirm(true);
-              setdeleteForm({ id: 0, username: '所选问题' });
+              setdeleteForm({ id: 0, username: '所选面试者' });
             }}
             danger
             disabled={selectedRowKeys.length == 0}

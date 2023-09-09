@@ -144,14 +144,19 @@ const Resume: FC<IProps> = () => {
     try {
       const values = await formADD.validateFields();
       const reStudentId = await userInfo({ studentId: values.studentId });
-      if (!reStudentId.data) {
+      if (reStudentId.data.length == 0) {
         message.error('你填写的学号不存在！');
         return;
       }
       const formData = new FormData();
       formData.append('one', values.filePath1.originFileObj);
       formData.append('two', values.filePath2.originFileObj);
+      console.log(formData);
+      console.log(reStudentId.data[0].id);
+
       const res = await resumeAdd({ id: reStudentId.data[0].id }, formData);
+      console.log(res);
+
       if (res.status == 200) {
         setpagination({ ...pagination });
         message.success('添加成功！');
@@ -169,6 +174,7 @@ const Resume: FC<IProps> = () => {
       const values = await formUpload.validateFields();
       const formData = new FormData();
 
+      console.log(formData);
       if (values.filePath1) {
         formData.append('one', values.filePath1.originFileObj);
       }
@@ -473,7 +479,7 @@ const Resume: FC<IProps> = () => {
           <Button
             onClick={() => {
               setopenConfirm(true);
-              setdeleteForm({ userId: 0, username: '所选问题' });
+              setdeleteForm({ userId: 0, username: '所选简历' });
             }}
             danger
             disabled={selectedRowKeys.length == 0}
