@@ -30,8 +30,8 @@ const Camera: React.FC<CameraProps> = ({ onUploadPhoto, onUnloadPhoto }) => {
     navigator.mediaDevices
       .getUserMedia({
         video: {
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
+          width: { ideal: 1080 },
+          height: { ideal: 1920 },
           frameRate: 30,
           facingMode: state.facing
         },
