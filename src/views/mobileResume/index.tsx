@@ -165,12 +165,19 @@ const MobileResume: FC<IProps> = () => {
         return;
       }
       const formData = new FormData();
-      formData.append('one', values.filePath1);
-      formData.append('two', values.filePath2);
+      messageApi.open({
+        key: 'uploading',
+        type: 'loading',
+        content: 'Loading...'
+      });
       const res = await resumeAdd({ id: reStudentId.data[0].id }, formData);
       if (res.status == 200) {
         setpagination({ ...pagination });
-        message.success('添加成功！');
+        messageApi.open({
+          key: 'uploading',
+          type: 'success',
+          content: '添加成功！'
+        });
         rePhotoADD();
       } else {
         message.error('添加失败！');
