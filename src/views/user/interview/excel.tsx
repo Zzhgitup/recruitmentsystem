@@ -18,7 +18,7 @@ interface IProps {
 }
 
 const apiArr = [
-  passAll,
+  // passAll,
   passFirstExcelOne,
   passFirstExcelTwo,
   passSecondExcel,
@@ -29,7 +29,7 @@ const apiArr = [
 ];
 
 const apiName = [
-  '已录取',
+  // '已录取',
   '待二面(附面试官)',
   '待二面',
   '待三面',
@@ -51,16 +51,9 @@ const Excel: FC<IProps> = () => {
     values.data = values.data.format('YYYY年MM月DD日HH时mm分');
     const { type, data, place } = values;
     // console.log(values);
-    if (type == 0) {
-      const res = await passAll();
-      const url = window.URL.createObjectURL(res);
-      download(url, apiName[type]);
-      return;
-    } else {
-      const res = await apiArr[type]({ data, place });
-      const url = window.URL.createObjectURL(res);
-      download(url, apiName[type]);
-    }
+    const res = await apiArr[type]({ data, place });
+    const url = window.URL.createObjectURL(res);
+    download(url, apiName[type]);
   };
   const validateMessages = {
     required: '请填写您要导出的${label}信息!'
@@ -99,6 +92,18 @@ const Excel: FC<IProps> = () => {
             htmlType="submit"
           >
             导出EXCEL
+          </Button>
+          <Button
+            type="primary"
+            style={{ marginRight: '10px', backgroundColor: '#0DD068' }}
+            icon={<FileExcelOutlined />}
+            onClick={async () => {
+              const res = await passAll();
+              const url = window.URL.createObjectURL(res);
+              download(url, '录取名单');
+            }}
+          >
+            导出录取名单
           </Button>
         </Form.Item>
       </Form>
