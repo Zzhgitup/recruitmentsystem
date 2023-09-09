@@ -153,13 +153,21 @@ const Resume: FC<IProps> = () => {
       formData.append('two', values.filePath2.originFileObj);
       console.log(formData);
       console.log(reStudentId.data[0].id);
-
+      messageApi.open({
+        key: 'uploading',
+        type: 'loading',
+        content: 'Loading...'
+      });
       const res = await resumeAdd({ id: reStudentId.data[0].id }, formData);
       console.log(res);
 
       if (res.status == 200) {
         setpagination({ ...pagination });
-        message.success('添加成功！');
+        messageApi.open({
+          key: 'uploading',
+          type: 'success',
+          content: '添加成功！'
+        });
         reopenADD();
       } else {
         message.error('添加失败！');

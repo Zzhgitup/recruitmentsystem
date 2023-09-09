@@ -12,4 +12,4 @@ if (process.env.NODE_ENV == 'development') {
 }
 export { BASE_URL, TIMEOUT }; */
 export const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
-export const TIMEOUT = 10000;
+export const TIMEOUT = 20000;
