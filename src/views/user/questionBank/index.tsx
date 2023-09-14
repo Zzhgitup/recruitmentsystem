@@ -301,14 +301,14 @@ const QuestionBank: FC<IProps> = () => {
           <Form.Item
             label="问题"
             name="question"
-            rules={[{ required: true }, { type: 'string', min: 2, max: 100 }]}
+            rules={[{ required: true }, { type: 'string', min: 2, max: 300 }]}
           >
             <Input.TextArea placeholder="请填写问题" style={{ minWidth: '250px' }} />
           </Form.Item>
           <Form.Item
             label="回答"
             name="answer"
-            rules={[{ required: true }, { type: 'string', min: 2, max: 100 }]}
+            rules={[{ required: true }, { type: 'string', min: 2, max: 300 }]}
           >
             <Input.TextArea placeholder="请填写回答" style={{ minWidth: '250px' }} />
           </Form.Item>
