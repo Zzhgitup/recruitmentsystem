@@ -34,15 +34,12 @@ const Login: FC<IProps> = () => {
         console.log(result);
         if (result.payload.code == 200) {
           messageApi.destroy('loading');
-          messageApi
-            .open({
-              type: 'success',
-              content: '登录成功'
-            })
-            .then(() => {
-              const flag = useMobilorPC();
-              flag ? navigate('/user/interview') : navigate('/mobileResume');
-            });
+          messageApi.open({
+            type: 'success',
+            content: '登录成功'
+          });
+          const flag = useMobilorPC();
+          flag ? navigate('/user/interview') : navigate('/mobileResume');
         } else {
           messageApi.destroy('loading');
           messageApi.open({
