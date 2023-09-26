@@ -9,7 +9,8 @@ import {
   setScore,
   getScore,
   interviewStatusUpload,
-  setcomment
+  setcomment,
+  getUserInfoById
 } from '@/service/modules/user';
 import PersonInfo, { PersonInfoType, statusToCh } from '@/components/PersonInfo';
 import ResumeCard, { ResumeInfoType } from '@/components/ResumeCard';
@@ -68,12 +69,16 @@ const Interviewing: FC<IProps> = () => {
     }
   }, []);
   const getUserForm = async (eId: number) => {
-    const dataAll = await Promise.all([userInfo({ id: eId }), resumeById({ userId: eId })]);
+    const dataAll = await Promise.all([
+      userInfo({ id: eId }),
+      resumeById({ userId: eId }),
+      getUserInfoById({ id: eId })
+    ]);
     // console.log(dataAll);
 
     if (dataAll[0].status == 200) {
-      setuserForms(dataAll[0].data);
       setuserForm(dataAll[0].data[0]);
+      console.log(dataAll[0].data);
     } else {
       message.error('获取信息失败！');
     }
@@ -91,6 +96,11 @@ const Interviewing: FC<IProps> = () => {
         type: 'error',
         content: '获取信息失败！'
       });
+    }
+    if (dataAll[2].status == 200) {
+      setuserForms(dataAll[2].data);
+    } else {
+      message.error('获取信息失败！');
     }
   };
   const validateMessages = {

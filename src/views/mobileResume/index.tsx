@@ -555,14 +555,14 @@ const MobileResume: FC<IProps> = () => {
           >
             添加
           </Button>
-          <Button
+          {/* <Button
             onClick={() => setPhotoADD(true)}
             style={{ backgroundColor: '#0DD068', marginRight: '10px' }}
             type="primary"
             icon={<PlusSquareOutlined />}
           >
             拍照上传
-          </Button>
+          </Button> */}
         </Form.Item>
       </Form>
       <Table
