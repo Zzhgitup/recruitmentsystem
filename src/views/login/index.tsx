@@ -21,22 +21,27 @@ const Login: FC<IProps> = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const onFinish = (values: any) => {
+    messageApi.loading({
+      type: 'loading',
+      content: '正在登录',
+      duration: 0,
+      key: 'loading'
+    });
     console.log('Success:', values);
     //登录
     dispath(fetchlogin({ password: values.password, studentID: values.username })).then(
       (result: any) => {
         console.log(result);
         if (result.payload.code == 200) {
-          messageApi
-            .open({
-              type: 'success',
-              content: '登录成功'
-            })
-            .then(() => {
-              const flag = useMobilorPC();
-              flag ? navigate('/user/interview') : navigate('/mobileResume');
-            });
+          messageApi.destroy('loading');
+          messageApi.open({
+            type: 'success',
+            content: '登录成功'
+          });
+          const flag = useMobilorPC();
+          flag ? navigate('/user/interview') : navigate('/mobileResume');
         } else {
+          messageApi.destroy('loading');
           messageApi.open({
             type: 'error',
             content: '登陆失败'
