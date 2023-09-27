@@ -29,7 +29,7 @@ import {
   intervieweesDelete,
   interviewPlaceUpload,
   resumeById,
-  userInfo
+  getUserInfoById
 } from '@/service/modules/user';
 import { useNavigate } from 'react-router-dom';
 import ResumeCard, { ResumeInfoType } from '@/components/ResumeCard';
@@ -226,7 +226,7 @@ const Interview: FC<IProps> = () => {
   const onToEvaluate = async (data: any) => {
     setopenEvaluate(true);
     try {
-      const res = await userInfo({ id: data.id });
+      const res = await getUserInfoById({ id: data.id });
       console.log(res);
 
       if (res.status == 200) {

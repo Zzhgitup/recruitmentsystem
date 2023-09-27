@@ -50,18 +50,8 @@ const InterviewTable: React.FC<{ interviewTableInfo: PersonInfoType[] }> = ({
     const obj: TableType = {
       level: InterviewToCh(item.level),
       appraise: item.appraise,
-      store: 0
+      store: item.score
     };
-
-    if (item.level == 0) {
-      obj.store = item.firstScore;
-    } else if (item.level == 1) {
-      obj.store = item.secondScore;
-    } else if (item.level == 2) {
-      obj.store = item.thirdScore;
-    } else {
-      continue;
-    }
     data.push(obj);
   }
   return (

@@ -12,6 +12,7 @@ export interface PersonInfoType {
   thirdScore?: number;
   level?: number;
   appraise?: string;
+  score?: number;
 }
 export function statusToCh(num: number) {
   switch (num) {

@@ -1,5 +1,5 @@
-import React, { memo, useEffect, useRef } from 'react';
-import type { ElementRef, FC, ReactNode } from 'react';
+import React, { memo, useRef } from 'react';
+import type { FC, ReactNode } from 'react';
 import { Container } from './style';
 import { Button, Form, Input, message } from 'antd';
 import { usedispatch } from '@/store';
