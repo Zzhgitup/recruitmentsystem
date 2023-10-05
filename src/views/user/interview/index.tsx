@@ -230,7 +230,11 @@ const Interview: FC<IProps> = () => {
       console.log(res);
 
       if (res.status == 200) {
-        setuserForms(res.data);
+        if (res.data == '无数据') {
+          setuserForms([]);
+        } else {
+          setuserForms(res.data);
+        }
         message.success('获取成功！');
       } else {
         message.error('获取失败！');
@@ -334,6 +338,8 @@ const Interview: FC<IProps> = () => {
     try {
       const values = await formStatusUpload.validateFields();
       const res = await interviewStatusUpload(values);
+      // console.log(res);
+
       if (res.status == 200) {
         setpagination({ ...pagination });
         message.success('修改成功！');

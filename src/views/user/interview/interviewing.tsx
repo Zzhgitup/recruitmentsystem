@@ -98,7 +98,11 @@ const Interviewing: FC<IProps> = () => {
       });
     }
     if (dataAll[2].status == 200) {
-      setuserForms(dataAll[2].data);
+      if (dataAll[2].data == '无数据') {
+        setuserForms([]);
+      } else {
+        setuserForms(dataAll[2].data);
+      }
     } else {
       message.error('获取信息失败！');
     }

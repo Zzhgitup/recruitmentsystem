@@ -46,6 +46,7 @@ const InterviewTable: React.FC<{ interviewTableInfo: PersonInfoType[] }> = ({
   interviewTableInfo
 }) => {
   const data: TableType[] = [];
+  console.log(interviewTableInfo);
   for (const item of interviewTableInfo) {
     const obj: TableType = {
       level: InterviewToCh(item.level),
@@ -54,6 +55,7 @@ const InterviewTable: React.FC<{ interviewTableInfo: PersonInfoType[] }> = ({
     };
     data.push(obj);
   }
+
   return (
     <>
       <Table
