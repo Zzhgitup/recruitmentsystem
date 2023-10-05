@@ -42,7 +42,7 @@ const AuthRequire: FC<Props> = ({ children, requireAuth, title = '未来招新�
       <Result
         status="403"
         title="403"
-        subTitle="大二同学可能无权限访问此页面"
+        subTitle="无权限访问此页面"
         extra={
           <Button
             onClick={() => {
