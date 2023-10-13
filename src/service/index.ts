@@ -20,12 +20,15 @@ const Hyrequire2 = new HYrequest({
       return config;
     },
     requestFailFn: (err) => {
+      console.log('InternalAxiosRequestConfig拦截器2');
       return err;
     },
     responseSuccessFn: (res) => {
+      console.log('InternalAxiosRequestConfig拦截器3');
       return res;
     },
     responseFailFn(err) {
+      console.log('InternalAxiosRequestConfig拦截器4');
       return err;
     }
   }

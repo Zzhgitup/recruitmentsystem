@@ -294,11 +294,17 @@ const Interview: FC<IProps> = () => {
   const onReset = () => {
     form.resetFields();
   };
+
+  const onResetPage = () => {
+    setpagination({ pageNum: 1, pageSize: 5 });
+  };
   const onFinish = (values: any) => {
     onReset();
     const { status, name, studentId } = values;
+    onResetPage();
     setsearchForm({ status, name, studentId });
   };
+
   const onAddOk = async () => {
     try {
       const values = await formADD.validateFields();

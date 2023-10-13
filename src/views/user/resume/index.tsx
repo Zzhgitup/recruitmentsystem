@@ -109,6 +109,9 @@ const Resume: FC<IProps> = () => {
   const [pagination, setpagination] = useState({ pageNum: 1, pageSize: 5 });
   const [total, setTotal] = useState(20);
   const [form] = Form.useForm();
+  const onResetPage = () => {
+    setpagination({ pageNum: 1, pageSize: 5 });
+  };
   const getUserCb = useCallback(
     () => allResumePage({ ...pagination, ...form.getFieldsValue() }),
     [pagination]
@@ -132,6 +135,7 @@ const Resume: FC<IProps> = () => {
   const [formUpload]: any = Form.useForm();
   const onFinish = (values: any) => {
     console.log(values);
+    onResetPage();
     console.log(form.getFieldsValue());
     setpagination({ ...pagination });
     // form.setFieldsValue(values);
