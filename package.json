@@ -22,6 +22,7 @@
     "js-confetti": "^0.11.0",
     "jwt-decode": "^3.1.2",
     "lib-flexible": "^0.3.2",
+    "nprogress": "^0.2.0",
     "postcss-pxtorem": "^6.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
@@ -60,6 +61,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.21.0",
     "@craco/craco": "^7.1.0",
+    "@types/nprogress": "^0.2.1",
     "@types/styled-components": "^5.1.26",
     "babel-plugin-import": "^1.13.6",
     "eslint": "^8.40.0",

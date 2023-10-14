@@ -1,5 +1,6 @@
 import { BASE_URL, TIMEOUT } from './config';
 import HYrequest from './request';
+import nProgress from 'nprogress';
 const Hyrequire = new HYrequest({
   baseURL: BASE_URL,
   timeout: TIMEOUT,
@@ -7,7 +8,19 @@ const Hyrequire = new HYrequest({
     requestSuccessFn(config) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       config.headers!.token = localStorage.getItem('ZXtoken');
+      nProgress.start();
       return config;
+    },
+    requestFailFn: (err) => {
+      return err;
+    },
+    responseSuccessFn: (res) => {
+      nProgress.done();
+      return res;
+    },
+    responseFailFn(err) {
+      nProgress.done();
+      return err;
     }
   }
 });
@@ -20,15 +33,12 @@ const Hyrequire2 = new HYrequest({
       return config;
     },
     requestFailFn: (err) => {
-      console.log('InternalAxiosRequestConfig拦截器2');
       return err;
     },
     responseSuccessFn: (res) => {
-      console.log('InternalAxiosRequestConfig拦截器3');
       return res;
     },
     responseFailFn(err) {
-      console.log('InternalAxiosRequestConfig拦截器4');
       return err;
     }
   }

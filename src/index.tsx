@@ -4,8 +4,10 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import App from '@/App';
 import 'lib-flexible/flexible';
+import 'nprogress/nprogress';
 import { store } from './store';
 import '@/assets/css/index.less';
+import '@/assets/css/nprogress.css';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement //类型断言
 );

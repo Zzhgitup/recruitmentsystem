@@ -1,5 +1,4 @@
 import { Hyrequire } from '..';
-
 //题库分类
 export function getTypeById(data: any) {
   return Hyrequire.get({
